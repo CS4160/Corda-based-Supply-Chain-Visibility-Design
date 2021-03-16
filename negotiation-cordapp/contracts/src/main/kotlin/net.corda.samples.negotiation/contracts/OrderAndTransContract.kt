@@ -74,11 +74,11 @@ class OrderAndTransContract : Contract {
                 "There is exactly one input" using (tx.inputStates.size == 1)
                 "The single input is of type TransState" using (tx.inputsOfType<TransState>().size == 1)
                 "There is exactly one output" using (tx.outputStates.size == 1)
-                "The single output is of type OrderState" using (tx.outputsOfType<OrderState>().size == 1)
+                "The single output is of type TransState" using (tx.outputsOfType<TransState>().size == 1)
                 "There is exactly one command" using (tx.commands.size == 1)
                 "There is no timestamp" using (tx.timeWindow == null)
 
-                val output = tx.outputsOfType<OrderState>().single()
+                val output = tx.outputsOfType<TransState>().single()
                 val input = tx.inputsOfType<TransState>().single()
 
                 "The good is unmodified in the output" using (output.good == input.good)
@@ -117,11 +117,11 @@ class OrderAndTransContract : Contract {
                 "There is exactly one input" using (tx.inputStates.size == 1)
                 "The single input is of type TransState" using (tx.inputsOfType<TransState>().size == 1)
                 "There is exactly one output" using (tx.outputStates.size == 1)
-                "The single output is of type OrderState" using (tx.outputsOfType<OrderState>().size == 1)
+                "The single output is of type OrderState" using (tx.outputsOfType<TransState>().size == 1)
                 "There is exactly one command" using (tx.commands.size == 1)
                 "There is no timestamp" using (tx.timeWindow == null)
 
-                val output = tx.outputsOfType<OrderState>().single()
+                val output = tx.outputsOfType<TransState>().single()
                 val input = tx.inputsOfType<TransState>().single()
 
                 "The good is unmodified in the output" using (output.good == input.good)

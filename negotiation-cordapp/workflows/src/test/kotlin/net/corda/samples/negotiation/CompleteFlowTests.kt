@@ -1,21 +1,22 @@
 package net.corda.samples.negotiation
 
 import net.corda.core.node.services.queryBy
+import net.corda.samples.negotiation.states.OrderState
 import net.corda.samples.negotiation.states.TransState
 import net.corda.testing.internal.chooseIdentity
 import org.junit.Test
 import java.util.*
 import kotlin.test.assertEquals
 
-class AddItineraryFlowTests: FlowTestsBaseV2() {
+class CompleteFlowTests: FlowTestsBaseV2() {
 
     @Test
-    fun `test add itinerary flow`() {
-        testAddItinerary()
+    fun `test complete flow`() {
+        testComplete()
     }
 
 
-    private fun testAddItinerary() {
+    private fun testComplete() {
         val counterparty = b.info.chooseIdentity()
         val deliver = c.info.chooseIdentity()
 
@@ -23,20 +24,24 @@ class AddItineraryFlowTests: FlowTestsBaseV2() {
         nodeBNoticeLoad(orderId,deliver)
         val expectedTime = Date()
         nodeCAddItinerary(orderId,expectedTime = expectedTime)
+        nodeBUpdate(orderId)
+        val actualTime = Date()
+        nodeCArrival(orderId,actualTime)
+        nodeBComplete(orderId)
 
         for (node in listOf(a, b, c)) {
             node.transaction {
                 val orders = node.services.vaultService.queryBy<TransState>().states
                 assertEquals(1, orders.size)
                 val order = orders.single().state.data
+                assertEquals(order.itinerary.actualTime, actualTime)
 
-                assertEquals(order.itinerary.expectedTime, expectedTime)
-                val (buyer, seller, deliver) = listOf(a.info.chooseIdentity(),b.info.chooseIdentity(),c.info.chooseIdentity())
 
-                assertEquals(deliver, order.deliver)
+                val (buyer, seller, deliver) = listOf(a.info.chooseIdentity(),b.info.chooseIdentity(), c.info.chooseIdentity())
+
                 assertEquals(buyer, order.buyer)
                 assertEquals(seller, order.seller)
-//                assertEquals(deliver, order.seller)
+                assertEquals(deliver, order.deliver)
             }
         }
     }

@@ -28,10 +28,10 @@ object UpdateFlow {
 
 
             // Creating the output.
-            val output = OrderState(input.buyer, input.seller, input.deliver,input.good, input.itinerary, linearId = orderId)
+            val output = TransState(input.buyer, input.seller, input.deliver,input.good, input.itinerary, linearId = orderId)
 
             // Creating the command.
-            val requiredSigners = listOf(input.buyer.owningKey, input.seller.owningKey)
+            val requiredSigners = listOf(input.buyer.owningKey, input.seller.owningKey, input.deliver.owningKey)
             val command = Command(OrderAndTransContract.Commands.Update(), requiredSigners)
 
             // Building the transaction.
@@ -48,11 +48,12 @@ object UpdateFlow {
 //            val counterparty = if (ourIdentity == input.proposer) input.proposee else input.proposer
             val counterparty = input.buyer
             val counterpartySession = initiateFlow(counterparty)
+            val counterpartySession2 = initiateFlow(input.deliver)
 
-            val fullyStx = subFlow(CollectSignaturesFlow(partStx, listOf(counterpartySession)))
+            val fullyStx = subFlow(CollectSignaturesFlow(partStx, listOf(counterpartySession, counterpartySession2)))
 
             // Finalising the transaction.
-            subFlow(FinalityFlow(fullyStx, listOf(counterpartySession)))
+            subFlow(FinalityFlow(fullyStx, listOf(counterpartySession, counterpartySession2)))
         }
     }
 
@@ -63,7 +64,7 @@ object UpdateFlow {
             val signTransactionFlow = object : SignTransactionFlow(counterpartySession) {
                 override fun checkTransaction(stx: SignedTransaction) {
                     val ledgerTx = stx.toLedgerTransaction(serviceHub, false)
-                    val seller = ledgerTx.inputsOfType<OrderState>().single().seller
+                    val seller = ledgerTx.inputsOfType<TransState>().single().seller
                     if (seller != counterpartySession.counterparty) {
                         throw FlowException("Only the seller can send the update information.")
                     }

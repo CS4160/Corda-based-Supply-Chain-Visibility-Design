@@ -28,7 +28,7 @@ class UpdateFlowTests: FlowTestsBaseV2() {
 
         for (node in listOf(a, b)) {
             node.transaction {
-                val orders = node.services.vaultService.queryBy<OrderState>().states
+                val orders = node.services.vaultService.queryBy<TransState>().states
                 assertEquals(1, orders.size)
                 val order = orders.single().state.data
 

@@ -4,6 +4,7 @@ import co.paralleluniverse.fibers.Suspendable
 import net.corda.core.contracts.Command
 import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.flows.*
+import net.corda.core.identity.Party
 import net.corda.core.node.services.queryBy
 import net.corda.core.node.services.vault.QueryCriteria
 import net.corda.core.transactions.SignedTransaction
@@ -11,6 +12,7 @@ import net.corda.core.transactions.TransactionBuilder
 import net.corda.core.utilities.ProgressTracker
 import net.corda.samples.negotiation.contracts.OrderAndTransContract
 import net.corda.samples.negotiation.states.Itinerary
+import net.corda.samples.negotiation.states.OrderState
 import net.corda.samples.negotiation.states.TransState
 import java.util.*
 
@@ -27,12 +29,14 @@ object ArrivalFlow {
             val inputStateAndRef = serviceHub.vaultService.queryBy<TransState>(inputCriteria).states.single()
             val input = inputStateAndRef.state.data
 
+//            val deliver:Party = input.deliver as Party
+
             // Creating the output.
             val new_itinerary = Itinerary(input.itinerary.location, input.itinerary.expectedTime, actualTime)
-            val output = TransState(input.buyer,input.seller, input.deliver, input.good, new_itinerary)
+            val output = TransState(input.buyer,input.seller, input.deliver, input.good, new_itinerary, linearId = orderId)
 
             // Creating the command.
-            val requiredSigners = listOf(input.seller.owningKey, input.deliver.owningKey)
+            val requiredSigners = listOf(input.buyer.owningKey, input.seller.owningKey, input.deliver.owningKey)
             val command = Command(OrderAndTransContract.Commands.Arrive(), requiredSigners)
 
             // Building the transaction.
@@ -49,10 +53,11 @@ object ArrivalFlow {
 //            val counterparty = if (ourIdentity == input.proposer) input.proposee else input.proposer
             val counterparty = input.seller
             val counterpartySession = initiateFlow(counterparty)
-            val fullyStx = subFlow(CollectSignaturesFlow(partStx, listOf(counterpartySession)))
+            val counterpartySession2 = initiateFlow(input.buyer)
+            val fullyStx = subFlow(CollectSignaturesFlow(partStx, listOf(counterpartySession, counterpartySession2)))
 
             // Finalising the transaction.
-            subFlow(FinalityFlow(fullyStx, listOf(counterpartySession)))
+            subFlow(FinalityFlow(fullyStx, listOf(counterpartySession, counterpartySession2)))
         }
     }
 
