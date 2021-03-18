@@ -48,14 +48,14 @@ object ArrivalFlow {
             val partStx = serviceHub.signInitialTransaction(txBuilder)
 
             // Gathering the counterparty's signature.
-//            val counterparty = if (ourIdentity == input.proposer) input.proposee else input.proposer
-            val counterparty = input.seller
-            val counterpartySession = initiateFlow(counterparty)
-            val counterpartySession2 = initiateFlow(input.buyer)
-            val fullyStx = subFlow(CollectSignaturesFlow(partStx, listOf(counterpartySession, counterpartySession2)))
+            val otherDistributors = output.participants
+            val sessionWithOtherDistributors = otherDistributors
+                .filterNot { it == ourIdentity }
+                .map { initiateFlow(it) }
+            val fullyStx = subFlow(CollectSignaturesFlow(partStx, sessionWithOtherDistributors))
 
             // Finalising the transaction.
-            subFlow(FinalityFlow(fullyStx, listOf(counterpartySession, counterpartySession2)))
+            subFlow(FinalityFlow(fullyStx, sessionWithOtherDistributors))
         }
     }
 

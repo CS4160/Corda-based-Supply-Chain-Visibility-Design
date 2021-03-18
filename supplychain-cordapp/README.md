@@ -1,12 +1,12 @@
     command for Alice:
-    flow start OrderFlow$Initiator isBuyer: true, good: 'Macbook', location: 'Hague', counterparty: 'O=Apple,L=Rotterdam,C=NL'
+    flow start OrderFlow$Initiator isBuyer: true, good: 'Macbook', location: 'Hague', counterparty: Apple
     
     Command for Bob:
-    flow start OrderFlow$Initiator isBuyer: true, good: 'Airpods', location: 'Delft', counterparty: 'O=Apple,L=Rotterdam,C=NL'
+    flow start OrderFlow$Initiator isBuyer: true, good: 'Airpods', location: 'Delft', counterparty: Apple
     
     command for Apple:
-    flow start NoticeFlow$Initiator orderId: c4ecffc3-6e8a-40b3-9752-de2b2f5c9b3c, deliver: 'O=Tom,L=Rotterdam,C=NL'
-    flow start NoticeFlow$Initiator orderId: [Bob's OrderId], deliver: 'O=Tom,L=Rotterdam,C=NL'
+    flow start NoticeFlow$Initiator orderId: c4ecffc3-6e8a-40b3-9752-de2b2f5c9b3c, deliver: Tom
+    flow start NoticeFlow$Initiator orderId: [Bob's OrderId], deliver: Tom
     
     command for Tom
     flow start AddItineraryFlow$Initiator OrderId: c4ecffc3-6e8a-40b3-9752-de2b2f5c9b3c, expectedTime: '2017-06-08T10:41:06.261+0800'
