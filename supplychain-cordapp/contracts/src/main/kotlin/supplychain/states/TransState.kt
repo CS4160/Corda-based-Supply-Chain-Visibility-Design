@@ -16,5 +16,5 @@ data class TransState(
         val itinerary: Itinerary,
         val status: String,
         override val linearId: UniqueIdentifier = UniqueIdentifier()) : LinearState {
-    override val participants = listOf(buyer,seller,deliver)
+    override val participants = listOf(seller,deliver)
 }

@@ -17,29 +17,29 @@ import java.util.*
 object AddItineraryFlow {
     @InitiatingFlow
     @StartableByRPC
-    class Initiator(val OrderId: UniqueIdentifier, val expectedTime: Date) : FlowLogic<Unit>() {
+    class Initiator(val orderId: UniqueIdentifier, val expectedTime: Date) : FlowLogic<Unit>() {
         override val progressTracker = ProgressTracker()
 
         @Suspendable
         override fun call() {
             // Retrieving the input from the vault.
-            val inputCriteria = QueryCriteria.LinearStateQueryCriteria(linearId = listOf(OrderId))
-            val inputStateAndRef = serviceHub.vaultService.queryBy<TransState>(inputCriteria).states.single()
-            val input = inputStateAndRef.state.data
+            val orderCriteria = QueryCriteria.LinearStateQueryCriteria(linearId = listOf(orderId))
+            val orderStateAndRef = serviceHub.vaultService.queryBy<TransState>(orderCriteria).states.single()
+            val order = orderStateAndRef.state.data
 
             // Creating the output.
-            val new_itinerary = Itinerary(input.itinerary.location,expectedTime,null)
-            val output = TransState(input.buyer, input.seller, input.deliver,input.good,new_itinerary, linearId = OrderId, status = "AddItinerary")
+            val newItinerary = Itinerary(order.itinerary.location,expectedTime,null)
+            val output = TransState(order.buyer, order.seller, order.deliver,order.good,newItinerary, linearId = orderId, status = "AddItinerary")
 
 
             // Creating the command.
-            val requiredSigners = listOf(input.buyer.owningKey, input.seller.owningKey, input.deliver.owningKey)
+            val requiredSigners = listOf(order.seller.owningKey, order.deliver.owningKey)
             val command = Command(OrderAndTransContract.Commands.AddItinerary(), requiredSigners)
 
             // Building the transaction.
-            val notary = inputStateAndRef.state.notary
+            val notary = orderStateAndRef.state.notary
             val txBuilder = TransactionBuilder(notary)
-            txBuilder.addInputState(inputStateAndRef)
+            txBuilder.addInputState(orderStateAndRef)
             txBuilder.addOutputState(output, OrderAndTransContract.ID)
             txBuilder.addCommand(command)
 

@@ -34,7 +34,7 @@ object ArrivalFlow {
             val output = TransState(input.buyer,input.seller, input.deliver, input.good, new_itinerary, linearId = orderId, status = "Arrival")
 
             // Creating the command.
-            val requiredSigners = listOf(input.buyer.owningKey, input.seller.owningKey, input.deliver.owningKey)
+            val requiredSigners = listOf(input.seller.owningKey, input.deliver.owningKey)
             val command = Command(OrderAndTransContract.Commands.Arrive(), requiredSigners)
 
             // Building the transaction.

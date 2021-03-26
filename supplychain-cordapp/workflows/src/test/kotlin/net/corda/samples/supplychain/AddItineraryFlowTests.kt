@@ -24,7 +24,7 @@ class AddItineraryFlowTests: FlowTestsBaseV2() {
         val expectedTime = Date()
         nodeCAddItinerary(orderId,expectedTime = expectedTime)
 
-        for (node in listOf(a, b, c)) {
+        for (node in listOf(b, c)) {
             node.transaction {
                 val orders = node.services.vaultService.queryBy<TransState>().states
                 assertEquals(1, orders.size)

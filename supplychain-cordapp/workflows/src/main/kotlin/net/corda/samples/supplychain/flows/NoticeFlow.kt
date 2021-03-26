@@ -23,24 +23,25 @@ object NoticeFlow {
         @Suspendable
         override fun call(): UniqueIdentifier {
             // Retrieving the input from the vault.
-            val inputCriteria = QueryCriteria.LinearStateQueryCriteria(linearId = listOf(orderId))
-            val inputStateAndRef = serviceHub.vaultService.queryBy<OrderState>(inputCriteria).states.single()
-            val input = inputStateAndRef.state.data
+            val orderCriteria = QueryCriteria.LinearStateQueryCriteria(linearId = listOf(orderId))
+            val orderStateAndRef = serviceHub.vaultService.queryBy<OrderState>(orderCriteria).states.single()
+            val order = orderStateAndRef.state.data
 
 
             // Creating the output.
-            val output = TransState(input.buyer, input.seller, deliver = deliver , good = input.good, itinerary = input.itinerary,
+            val output = TransState(order.buyer, order.seller, deliver = deliver , good = order.good, itinerary = order.itinerary,
                 linearId = orderId, status = "Load"
             )
 
             // Creating the command.
-            val requiredSigners = listOf(input.buyer.owningKey, input.seller.owningKey, deliver.owningKey)
+            val requiredSigners = listOf(order.seller.owningKey, deliver.owningKey)
             val command = Command(OrderAndTransContract.Commands.Load(), requiredSigners)
 
             // Building the transaction.
-            val notary = inputStateAndRef.state.notary
+//            val notary = orderStateAndRef.state.notary
+            val notary = serviceHub.networkMapCache.notaryIdentities.single()
             val txBuilder = TransactionBuilder(notary)
-            txBuilder.addInputState(inputStateAndRef)
+//            txBuilder.addInputState(inputStateAndRef)
             txBuilder.addOutputState(output, OrderAndTransContract.ID)
             txBuilder.addCommand(command)
 
@@ -48,6 +49,11 @@ object NoticeFlow {
             val partStx = serviceHub.signInitialTransaction(txBuilder)
 
             // Gathering the counterparty's signature.
+//            val counterparty = deliver
+//            val counterpartySession = initiateFlow(counterparty)
+//            val fullyStx = subFlow(CollectSignaturesFlow(partStx, listOf(counterpartySession)))
+
+
             val otherDistributors = output.participants
             val sessionWithOtherDistributors = otherDistributors
                 .filterNot { it == ourIdentity }
@@ -58,6 +64,7 @@ object NoticeFlow {
 
 
             // Finalising the transaction.
+//            val finalisedTx = subFlow(FinalityFlow(fullyStx, listOf(counterpartySession)))
             val finalisedTx = subFlow(FinalityFlow(fullyStx, sessionWithOtherDistributors))
             return finalisedTx.tx.outputsOfType<TransState>().single().linearId
         }
@@ -69,11 +76,7 @@ object NoticeFlow {
         override fun call() {
             val signTransactionFlow = object : SignTransactionFlow(counterpartySession) {
                 override fun checkTransaction(stx: SignedTransaction) {
-                    val ledgerTx = stx.toLedgerTransaction(serviceHub, false)
-                    val seller = ledgerTx.inputsOfType<OrderState>().single().seller
-                    if (seller != counterpartySession.counterparty) {
-                        throw FlowException("Only the seller can load goods.")
-                    }
+                    // No checking to be done.
                 }
             }
 

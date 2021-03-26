@@ -27,7 +27,7 @@ class ArrivalFlowTests: FlowTestsBaseV2() {
         val actualTime = Date()
         nodeCArrival(orderId,actualTime)
 
-        for (node in listOf(a, b, c)) {
+        for (node in listOf(b, c)) {
             node.transaction {
                 val orders = node.services.vaultService.queryBy<TransState>().states
                 assertEquals(1, orders.size)

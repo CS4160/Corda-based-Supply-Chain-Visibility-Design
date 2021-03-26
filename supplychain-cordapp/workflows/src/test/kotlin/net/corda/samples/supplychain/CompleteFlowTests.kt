@@ -1,6 +1,7 @@
 package net.corda.samples.supplychain
 
 import net.corda.core.node.services.queryBy
+import net.corda.samples.supplychain.states.OrderState
 import net.corda.samples.supplychain.states.TransState
 import net.corda.testing.internal.chooseIdentity
 import org.junit.Test
@@ -28,9 +29,9 @@ class CompleteFlowTests: FlowTestsBaseV2() {
         nodeCArrival(orderId,actualTime)
         nodeBComplete(orderId)
 
-        for (node in listOf(a, b, c)) {
+        for (node in listOf(a, b)) {
             node.transaction {
-                val orders = node.services.vaultService.queryBy<TransState>().states
+                val orders = node.services.vaultService.queryBy<OrderState>().states
                 assertEquals(1, orders.size)
                 val order = orders.single().state.data
                 assertEquals(order.itinerary.actualTime, actualTime)

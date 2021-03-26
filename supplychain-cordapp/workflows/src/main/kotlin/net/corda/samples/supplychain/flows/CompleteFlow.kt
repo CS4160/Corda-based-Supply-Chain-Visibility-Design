@@ -11,6 +11,7 @@ import net.corda.core.transactions.SignedTransaction
 import net.corda.core.transactions.TransactionBuilder
 import net.corda.core.utilities.ProgressTracker
 import net.corda.samples.supplychain.contracts.OrderAndTransContract
+import net.corda.samples.supplychain.states.OrderState
 
 object CompleteFlow {
     @InitiatingFlow
@@ -20,23 +21,26 @@ object CompleteFlow {
 
         @Suspendable
         override fun call() {
-            // Retrieving the input from the vault.
-            val inputCriteria = QueryCriteria.LinearStateQueryCriteria(linearId = listOf(orderId))
-            val inputStateAndRef= serviceHub.vaultService.queryBy<TransState>(inputCriteria).states.single()
-            val input = inputStateAndRef.state.data
+            // Retrieving the order from the vault.
+            val orderCriteria = QueryCriteria.LinearStateQueryCriteria(linearId = listOf(orderId))
+            val orderStateAndRef= serviceHub.vaultService.queryBy<OrderState>(orderCriteria).states.single()
+            val order = orderStateAndRef.state.data
 
+            val TransCriteria = QueryCriteria.LinearStateQueryCriteria(linearId = listOf(orderId))
+            val TransStateAndRef = serviceHub.vaultService.queryBy<TransState>(TransCriteria).states.single()
+            val transState = TransStateAndRef.state.data
 
             // Creating the output.
-            val output = TransState(input.buyer, input.seller, input.deliver,input.good, input.itinerary, linearId = orderId, status = "Complete")
+            val output = OrderState(order.buyer, order.seller, order.deliver,order.good, transState.itinerary, linearId = orderId)
 
             // Creating the command.
-            val requiredSigners = listOf(input.buyer.owningKey, input.seller.owningKey, input.deliver.owningKey)
+            val requiredSigners = listOf(order.buyer.owningKey, order.seller.owningKey)
             val command = Command(OrderAndTransContract.Commands.Deliver(), requiredSigners)
 
             // Building the transaction.
-            val notary = inputStateAndRef.state.notary
+            val notary = orderStateAndRef.state.notary
             val txBuilder = TransactionBuilder(notary)
-            txBuilder.addInputState(inputStateAndRef)
+            txBuilder.addInputState(orderStateAndRef)
             txBuilder.addOutputState(output, OrderAndTransContract.ID)
             txBuilder.addCommand(command)
 
@@ -44,9 +48,8 @@ object CompleteFlow {
             val partStx = serviceHub.signInitialTransaction(txBuilder)
 
             // Gathering the counterparty's signature.
-//            val counterparty = if (ourIdentity == input.proposer) input.proposee else input.proposer
-            val otherDistributors = output.participants
-            val sessionWithOtherDistributors = otherDistributors
+//            val counterparty = if (ourIdentity == order.proposer) order.proposee else order.proposer
+            val sessionWithOtherDistributors = output.participants
                 .filterNot { it == ourIdentity }
                 .map { initiateFlow(it) }
             val fullyStx = subFlow(CollectSignaturesFlow(partStx, sessionWithOtherDistributors))
@@ -63,7 +66,7 @@ object CompleteFlow {
             val signTransactionFlow = object : SignTransactionFlow(counterpartySession) {
                 override fun checkTransaction(stx: SignedTransaction) {
                     val ledgerTx = stx.toLedgerTransaction(serviceHub, false)
-                    val seller = ledgerTx.inputsOfType<TransState>().single().seller
+                    val seller = ledgerTx.inputsOfType<OrderState>().single().seller
                     if (seller != counterpartySession.counterparty) {
                         throw FlowException("Only the seller can choose to complete the order.")
                     }

@@ -38,7 +38,7 @@ class NoticeFlowTests: FlowTestsBaseV2() {
         val orderId = nodeACreatesOrder(true, "macbook", "Delft",counterparty)
         nodeBNoticeLoad(orderId,deliver)
 
-        for (node in listOf(a,b,c)) {
+        for (node in listOf(b,c)) {
             node.transaction {
                 val orders = node.services.vaultService.queryBy<TransState>().states
                 assertEquals(1, orders.size)
