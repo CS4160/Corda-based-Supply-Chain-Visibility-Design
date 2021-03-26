@@ -13,7 +13,7 @@ import net.corda.core.node.NodeInfo
 import net.corda.samples.supplychain.contracts.OrderAndTransContract
 import net.corda.samples.supplychain.flows.*
 
-//import net.corda.samples.supplychain.server.NodeRPCConnection
+import net.corda.samples.supplychain.server.NodeRPCConnection
 import net.corda.samples.supplychain.states.OrderState
 import net.corda.samples.supplychain.states.Itinerary
 import net.corda.samples.supplychain.states.TransState
@@ -132,7 +132,7 @@ class MainController(rpc: NodeRPCConnection) {
     }
 
 
-    @PutMapping(value = [ "driver" ], produces = [ TEXT_PLAIN_VALUE ])
+    @PutMapping(value = [ "driver-add" ], produces = [ TEXT_PLAIN_VALUE ])
     fun addItinerary(@RequestParam(value = "id") id: String,
                   @RequestParam(value = "expectedtime") expectedtime:Date) {
         val linearId = UniqueIdentifier.fromString(id)
@@ -141,7 +141,7 @@ class MainController(rpc: NodeRPCConnection) {
     }
 
 
-    @PutMapping(value = [ "driver" ], produces = [ TEXT_PLAIN_VALUE ])
+    @PutMapping(value = [ "driver-arrival" ], produces = [ TEXT_PLAIN_VALUE ])
     fun arrivalOrder(@RequestParam(value = "id") id: String,
                      @RequestParam(value = "arrivaltime") arrivaltime:Date) {
         val linearId = UniqueIdentifier.fromString(id)

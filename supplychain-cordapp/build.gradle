@@ -47,13 +47,16 @@ allprojects { //Properties that you need to compile your project (The applicatio
         jcenter()
         mavenCentral()
         maven { url 'https://software.r3.com/artifactory/corda' }
+        // Can be removed post-release - used to get nightly snapshot build.
+        maven { url 'https://software.r3.com/artifactory/corda-lib' }
+        maven { url 'https://software.r3.com/artifactory/corda-lib-dev' }
         maven { url 'https://jitpack.io' }
     }
 
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
         kotlinOptions {
-            languageVersion = "1.2"
-            apiVersion = "1.2"
+            languageVersion = "1.4"
+            apiVersion = "1.4"
             jvmTarget = "1.8"
             javaParameters = true   // Useful for reflection.
         }
@@ -118,9 +121,11 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
     }
     node {
         name "O=Notary,L=London,C=GB"
-        notary = [validating : false]
+        notary = [validating: false]
         p2pPort 10002
         rpcSettings {
+            useSsl false
+            standAloneBroker false
             address("localhost:10003")
             adminAddress("localhost:10043")
         }
@@ -129,6 +134,8 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
         name "O=Alice,L=Deflt,C=NL"
         p2pPort 10005
         rpcSettings {
+            useSsl false
+            standAloneBroker false
             address("localhost:10006")
             adminAddress("localhost:10046")
         }
@@ -136,8 +143,10 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
     }
     node {
         name "O=Tom,L=Rotterdam,C=NL"
-        p2pPort 10008
+        p2pPort 10007
         rpcSettings {
+            useSsl false
+            standAloneBroker false
             address("localhost:10009")
             adminAddress("localhost:10049")
         }
@@ -147,6 +156,8 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
         name "O=Bob,L=Hague,C=NL"
         p2pPort 10011
         rpcSettings {
+            useSsl false
+            standAloneBroker false
             address("localhost:10012")
             adminAddress("localhost:10052")
         }
@@ -156,9 +167,18 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
         name "O=Apple,L=Rotterdam,C=NL"
         p2pPort 10016
         rpcSettings {
+            useSsl false
+            standAloneBroker false
             address("localhost:10017")
             adminAddress("localhost:10055")
         }
-        rpcUsers = [[ user: "user1", "password": "test", "permissions": ["ALL"]]]
     }
 }
+
+task installQuasar(type: Copy) {
+    destinationDir rootProject.file("lib")
+    from(configurations.quasar) {
+        rename 'quasar-core(.*).jar', 'quasar.jar'
+    }
+}
+

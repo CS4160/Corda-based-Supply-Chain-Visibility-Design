@@ -29,8 +29,12 @@ dependencyManagement {
 }
 
 dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.4.20"
+
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+//    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4"
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
+//    testCompile "org.jetbrains.kotlin:kotlin-test:1.4"
     testCompile "junit:junit:$junit_version"
 
     // Corda dependencies.
@@ -42,7 +46,10 @@ dependencies {
 
     compile("org.springframework.boot:spring-boot-starter-websocket:$spring_boot_version") {
         exclude group: "org.springframework.boot", module: "spring-boot-starter-logging"
-    }
+    }//
+//    compile("org.springframework.boot:spring-boot-starter-webflux:$spring_boot_version") {
+//        exclude group: "org.springframework.boot", module: "spring-boot-starter-logging"
+//    }
     compile "org.springframework.boot:spring-boot-starter-log4j2:$spring_boot_version"
     compile "org.apache.logging.log4j:log4j-web:$log4j_version"
 
@@ -54,8 +61,8 @@ dependencies {
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     kotlinOptions {
-        languageVersion = "1.2"
-        apiVersion = "1.2"
+        languageVersion = "1.4"
+        apiVersion = "1.4"
         jvmTarget = "1.8"
         javaParameters = true   // Useful for reflection.
     }
@@ -64,24 +71,24 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 task runAliceServer(type: JavaExec, dependsOn: jar) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'net.corda.samples.supplychain.server.ServerKt'
-    args '--server.port=10009', '--config.rpc.host=localhost', '--config.rpc.port=10006', '--config.rpc.username=user1', '--config.rpc.password=password'
+    args '--server.port=10066', '--config.rpc.host=localhost', '--config.rpc.port=10006', '--config.rpc.username=user1', '--config.rpc.password=test'
 }
 
 task runBobServer(type: JavaExec, dependsOn: jar) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'net.corda.samples.supplychain.server.ServerKt'
-    args '--server.port=10012', '--config.rpc.host=localhost', '--config.rpc.port=10012', '--config.rpc.username=user1', '--config.rpc.password=password'
+    args '--server.port=10067', '--config.rpc.host=localhost', '--config.rpc.port=10012', '--config.rpc.username=user1', '--config.rpc.password=test'
 }
 
 task runTomServer(type: JavaExec, dependsOn: jar) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'net.corda.samples.supplychain.server.ServerKt'
-    args '--server.port=10015', '--config.rpc.host=localhost', '--config.rpc.port=10009', '--config.rpc.username=user1', '--config.rpc.password=password'
+    args '--server.port=10068', '--config.rpc.host=localhost', '--config.rpc.port=10009', '--config.rpc.username=user1', '--config.rpc.password=test'
 }
 
 task runAppleServer(type: JavaExec, dependsOn: jar) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'net.corda.samples.supplychain.server.ServerKt'
-    args '--server.port=10018', '--config.rpc.host=localhost', '--config.rpc.port=10017', '--config.rpc.username=user1', '--config.rpc.password=password'
+    args '--server.port=10069', '--config.rpc.host=localhost', '--config.rpc.port=10017', '--config.rpc.username=user1', '--config.rpc.password=password'
 }
 

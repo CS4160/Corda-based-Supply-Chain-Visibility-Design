@@ -25,7 +25,9 @@ sourceSets {
 }
 
 dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.4.20"
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+//    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testCompile "junit:junit:$junit_version"
 
@@ -44,8 +46,8 @@ dependencies {
 }
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
     kotlinOptions {
-        languageVersion = "1.2"
-        apiVersion = "1.2"
+        languageVersion = "1.4"
+        apiVersion = "1.4"
         jvmTarget = "1.8"
         javaParameters = true   // Useful for reflection.
     }

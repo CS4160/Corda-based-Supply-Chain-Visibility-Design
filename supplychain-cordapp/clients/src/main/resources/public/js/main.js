@@ -1,15 +1,18 @@
 "use strict";
 
 // Define your backend here.
-angular.module('demoAppModule', ['ui.bootstrap']).controller('DemoAppCtrl', function($http, $location, $uibModal) {
+angular.module('demoAppModule', ['ui.bootstrap']).controller('DemoAppCtrl', function($http, $location, $uibModal,$scope) {
     const demoApp = this;
-
     const apiBaseURL = "/api/iou/";
 
     // Retrieves the identity of this and other nodes.
     let peers = [];
     $http.get(apiBaseURL + "me").then((response) => demoApp.thisNode = response.data.me);
     $http.get(apiBaseURL + "peers").then((response) => peers = response.data.peers);
+    $http.get(apiBaseURL + "orders").then((response) =>demoApp.orders = Object.keys(response.data).map((key) => response.data[key].state.data));
+
+
+
 
     /** Displays the Buyer creation modal. */
     demoApp.openCreateOrderModel = () => {
@@ -30,7 +33,15 @@ angular.module('demoAppModule', ['ui.bootstrap']).controller('DemoAppCtrl', func
 
     /** Displays the  issuance modal.
     **/
-    demoApp.openSellerOrderModel = (id) => {
+    demoApp.openSellerOrderModel = () => {
+        // let id = [];
+        // if (demoApp.orders !== undefined) {
+        //     for(var j =0; j<demoApp.orders.length;j++){
+        //         id.push(demoApp.orders[j].linearId.id)
+        //     }
+        // }
+
+
         const sellerOrderModel = $uibModal.open({
             templateUrl: 'sellerOrderModel.html',
             controller: 'sellerOrderModelCtrl',
@@ -38,7 +49,8 @@ angular.module('demoAppModule', ['ui.bootstrap']).controller('DemoAppCtrl', func
             resolve: {
                 apiBaseURL: () => apiBaseURL,
                 peers: () => peers,
-                id: () => id,
+                orders: () => demoApp.orders
+                // id: () => id
           }
         });
 
@@ -63,7 +75,6 @@ angular.module('demoAppModule', ['ui.bootstrap']).controller('DemoAppCtrl', func
 
 
     demoApp.refresh = () => {
-        // Update the list of IOUs.o
         $http.get(apiBaseURL + "orders").then((response) => demoApp.orders =
             Object.keys(response.data).map((key) => response.data[key].state.data));
 

@@ -47,6 +47,8 @@ COMING WEEKS, WE'LL WRITE A TUTORIAL ON HOW BEST TO DO THIS.
                 class="glyphicon glyphicon-refresh"></span></button>
     </div>
 </nav>
+
+
 <!--
 buyer
 -->
@@ -99,16 +101,18 @@ seller
 <script type="text/ng-template" id="sellerOrderModel.html">
     <div class="modal-header">
         <h4 class="modal-title">Confirm new Order</h4>
+
+
     </div>
     <form>
         <div class="modal-body">
-            <div ng-show="!demoApp.orders.length" class="panel panel-primary">
+            <div ng-show="!sellerOrderModel.orders.length" class="panel panel-primary">
                 <div class="panel-heading">
                     <h3 class="panel-title">There are no recorded orders</h3>
                 </div>
             </div>
 
-            <div ng-show="demoApp.orders.length" class="panel panel-primary">
+            <div ng-show="sellerOrderModel.orders.length" class="panel panel-primary">
                 <div class="panel-heading">
                     <h3 class="panel-title">Recorded Orders:</h3>
                 </div>
@@ -125,18 +129,22 @@ seller
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="order in demoApp.orders">
+                        <tr ng-repeat="order in sellerOrderModel.orders">
+<!--                        <tr ng-repeat="order in demoApp.orders">-->
                             <td class="vert-align">{{order.buyer}}</td>
-                            <td class="vert-align">{{order.itinerary.get(1)}}</td>
-                            <td class="vert-align">{{order.itinerary.get(0)}}</td>
+                            <td class="vert-align">{{order.good}}</td>
+                            <td class="vert-align">{{order.itinerary.location}}</td>
                             <td class="form-group">
-                                <label for="assignDriver" class="control-label">Assign Driver:</label>
-                                <select ng-model = "sellerOrderModel.form.driver" class="form-control" id="assignDriver"
+                                <label for=("assignDriver"+order.buyer) class="control-label">Assign Driver for {{order.buyer}}}:</label>
+                                <select ng-model = "sellerOrderModel.form.driver[$index]" class="form-control" id=("assignDriver"+order.buyer)
                                         ng-options="peer as peer for peer in sellerOrderModel.peers">
                                 </select>
+<!--                                <select ng-model = "sellerOrderModel.form.driver" class="form-control" id=("assignDriver"+order.buyer)>-->
+<!--                                    <option ng-repeat="peer in sellerOrderModel.peers" value="{peer}">{{peer}}</option>-->
+<!--                                </select>-->
                             </td>
-                            <td class="vert-align">{{order.itinerary.get(2)}}</td>
-                            <td class="vert-align">{{order.itinerary.get(3)}}</td>
+                            <td class="vert-align">{{order.itinerary.expectedTime}}</td>
+                            <td class="vert-align">{{order.itinerary.actualTime}}</td>
 
                         </tr>
                         </tbody>

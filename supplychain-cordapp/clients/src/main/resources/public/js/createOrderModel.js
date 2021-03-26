@@ -53,8 +53,14 @@ angular.module('demoAppModule').controller('createOrderModelCtrl', function($htt
 
     // Validates the IOU.
     function invalidFormInput() {
-        return isNaN(createOrderModel.form.location) || isNaN(createOrderModel.form.good) || (createOrderModel.form.counterparty === undefined);
+        var a = (createOrderModel.form.location === undefined)
+        var b = (createOrderModel.form.good === undefined)
+        var c = (createOrderModel.form.counterparty === undefined)
+
+        // return isNaN(createOrderModel.form.location) || isNaN(createOrderModel.form.good) || (createOrderModel.form.counterparty === undefined);
+        return a || b || c
     }
+
 });
 
 // Controller for the success/fail modal.

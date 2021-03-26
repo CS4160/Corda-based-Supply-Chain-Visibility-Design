@@ -45,7 +45,7 @@ angular.module('demoAppModule').controller('driverOrderModelCtrl', function ($ht
     driverOrderModel.cancel = () => $uibModalInstance.dismiss();
 
     function invalidFormInput() {
-        return isNaN(driverModel.form.expectedtime) || isNaN(driverModel.form.arrivaltime) ;
+        return (driverModel.form.expectedtime === undefined) || (driverModel.form.arrivaltime === undefined) ;
     }
 });
 

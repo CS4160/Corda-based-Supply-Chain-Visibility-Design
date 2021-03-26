@@ -1,36 +1,43 @@
 "use strict";
 
 // Similar to the IOU creation modal - see createIOUModal.js for comments.
-angular.module('demoAppModule').controller('sellerOrderModelCtrl', function ($http, $uibModalInstance, $uibModal, apiBaseURL, peers, id) {
-    const sellerModel = this;
+angular.module('demoAppModule').controller('sellerOrderModelCtrl', function ($http, $uibModalInstance, $uibModal, apiBaseURL, peers, orders) {
+    const sellerOrderModel = this;
 
-    sellerModel.peers = peers;
-    sellerModel.id = id;
-    sellerModel.form = {};
-    sellerModel.formError = false;
+    sellerOrderModel.peers = peers;
+    sellerOrderModel.orders = orders;
+    sellerOrderModel.form = {};
+    sellerOrderModel.formError = false;
+    let id = [];
 
-    sellerModel.transfer = () => {
+    if (sellerOrderModel.orders !== undefined) {
+        for(var j =0; j<sellerOrderModel.orders.length;j++){
+            id.push(sellerOrderModel.orders[j].linearId.id)
+        }
+    }
+
+    sellerOrderModel.transfer = () => {
         if (invalidFormInput()) {
-            sellerModel.formError = true;
+            sellerOrderModel.formError = true;
         } else {
-            sellerModel.formError = false;
+            sellerOrderModel.formError = false;
 
-            const id = sellerModel.id;
-            const driver = sellerModel.form.driver;
+            const id = sellerOrderModel.id;
+            const driver = sellerOrderModel.form.driver;
             $uibModalInstance.close();
-
-            const issueIOUEndpoint =
-                apiBaseURL +
-                `notice-order?id=${id}&driver=${driver}`;
-
-            $http.get(issueIOUEndpoint).then(
-                (result) => sellerModel.displayMessage(result),
-                (result) => sellerModel.displayMessage(result)
-            );
+            for (var j=0; j<id.length;j++){
+                const issueIOUEndpoint =
+                    apiBaseURL +
+                    `notice-order?id=${id[j]}&driver=${driver}`;
+                $http.get(issueIOUEndpoint).then(
+                    (result) => sellerOrderModel.displayMessage(result),
+                    (result) => sellerOrderModel.displayMessage(result)
+                );
+            }
         }
     };
 
-    sellerModel.displayMessage = (message) => {
+    sellerOrderModel.displayMessage = (message) => {
         const sellerMsgModel = $uibModal.open({
             templateUrl: 'sellerOrderModel.html',
             controller: 'sellerOrderCtrl',
@@ -41,10 +48,10 @@ angular.module('demoAppModule').controller('sellerOrderModelCtrl', function ($ht
         sellerMsgModel.result.then(() => {}, () => {});
     };
 
-    sellerModel.cancel = () => $uibModalInstance.dismiss();
+    sellerOrderModel.cancel = () => $uibModalInstance.dismiss();
 
     function invalidFormInput() {
-        return sellerModel.form.driver === undefined;
+        return sellerOrderModel.form.driver === undefined;
     }
 });
 

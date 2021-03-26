@@ -14,6 +14,7 @@ private const val CORDA_USER_PASSWORD = "config.rpc.password"
 private const val CORDA_NODE_HOST = "config.rpc.host"
 private const val CORDA_RPC_PORT = "config.rpc.port"
 
+
 /**
  *
  *
@@ -29,10 +30,11 @@ private const val CORDA_RPC_PORT = "config.rpc.port"
  */
 @Component
 open class NodeRPCConnection(
-        @Value("\${$CORDA_NODE_HOST}") private val host: String,
-        @Value("\${$CORDA_USER_NAME}") private val username: String,
-        @Value("\${$CORDA_USER_PASSWORD}") private val password: String,
-        @Value("\${$CORDA_RPC_PORT}") private val rpcPort: Int) {
+    @Value("\${$CORDA_NODE_HOST}") private val host: String,
+    @Value("\${$CORDA_USER_NAME}") private val username: String,
+    @Value("\${$CORDA_USER_PASSWORD}") private val password: String,
+    @Value("\${$CORDA_RPC_PORT}") private val rpcPort: Int
+) :AutoCloseable{
 
     lateinit var rpcConnection: CordaRPCConnection
         private set
@@ -48,11 +50,9 @@ open class NodeRPCConnection(
     }
 
     @PreDestroy
-    fun close() {
+    override fun close() {
         rpcConnection.notifyServerAndClose()
     }
-
-
 
 
 }
