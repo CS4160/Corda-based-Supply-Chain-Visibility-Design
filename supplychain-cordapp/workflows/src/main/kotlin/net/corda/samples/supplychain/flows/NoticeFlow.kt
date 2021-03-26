@@ -48,13 +48,17 @@ object NoticeFlow {
             val partStx = serviceHub.signInitialTransaction(txBuilder)
 
             // Gathering the counterparty's signature.
-            val counterparty = deliver
-            val counterpartySession = initiateFlow(counterparty)
-            val counterpartySession2 = initiateFlow(input.buyer)
-            val fullyStx = subFlow(CollectSignaturesFlow(partStx, listOf(counterpartySession,counterpartySession2)))
+            val otherDistributors = output.participants
+            val sessionWithOtherDistributors = otherDistributors
+                .filterNot { it == ourIdentity }
+                .map { initiateFlow(it) }
+            val fullyStx = subFlow(CollectSignaturesFlow(partStx, sessionWithOtherDistributors))
 
             // Finalising the transaction.
-            val finalisedTx = subFlow(FinalityFlow(fullyStx, listOf(counterpartySession,counterpartySession2)))
+
+
+            // Finalising the transaction.
+            val finalisedTx = subFlow(FinalityFlow(fullyStx, sessionWithOtherDistributors))
             return finalisedTx.tx.outputsOfType<TransState>().single().linearId
         }
     }
