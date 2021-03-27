@@ -120,15 +120,16 @@ class MainController(rpc: NodeRPCConnection) {
     @PutMapping(value = [ "notice-order" ], produces = [ TEXT_PLAIN_VALUE ])
     fun noticeOrder(@RequestParam(value = "id") id: String,
                     @RequestParam(value = "driver") driver: String): ResponseEntity<String> {
-        val linearId = UniqueIdentifier.fromString(id)
-        val newdriver = proxy.wellKnownPartyFromX500Name(CordaX500Name.parse(driver)) ?: throw IllegalArgumentException("Unknown party name.")
-        return try {
-            proxy.startFlow(::Noticeflow, linearId, newdriver).returnValue.get()
-            ResponseEntity.status(HttpStatus.CREATED).body("Order id $id transferred by $driver.")
+            val linearId = UniqueIdentifier.fromString(id)
+            val newdriver = proxy.wellKnownPartyFromX500Name(CordaX500Name.parse(driver))
+                    ?: throw IllegalArgumentException("Unknown party name.")
+            try{
+                val result = proxy.startTrackedFlow(::Noticeflow, linearId, newdriver).returnValue.get()
+                return ResponseEntity.status(HttpStatus.CREATED).body("Order id $id transferred by $result.")
+            } catch (e: Exception) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.message)
+            }
 
-        } catch (e: Exception) {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.message)
-        }
     }
 
 
@@ -136,8 +137,8 @@ class MainController(rpc: NodeRPCConnection) {
     fun addItinerary(@RequestParam(value = "id") id: String,
                   @RequestParam(value = "expectedtime") expectedtime:Date) {
         val linearId = UniqueIdentifier.fromString(id)
-        proxy.startFlow(::AddItineraryflow, linearId, expectedtime)
-        proxy.startFlow(::Updateorder,linearId)
+        proxy.startTrackedFlow(::AddItineraryflow, linearId, expectedtime)
+        proxy.startTrackedFlow(::Updateorder,linearId)
     }
 
 
@@ -145,8 +146,8 @@ class MainController(rpc: NodeRPCConnection) {
     fun arrivalOrder(@RequestParam(value = "id") id: String,
                      @RequestParam(value = "arrivaltime") arrivaltime:Date) {
         val linearId = UniqueIdentifier.fromString(id)
-        proxy.startFlow(::Arrivalorder, linearId, arrivaltime)
-        proxy.startFlow(::Completeorder,linearId)
+        proxy.startTrackedFlow(::Arrivalorder, linearId, arrivaltime)
+        proxy.startTrackedFlow(::Completeorder,linearId)
     }
 
 

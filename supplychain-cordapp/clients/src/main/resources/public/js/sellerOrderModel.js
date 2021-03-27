@@ -6,7 +6,7 @@ angular.module('demoAppModule').controller('sellerOrderModelCtrl', function ($ht
 
     sellerOrderModel.peers = peers;
     sellerOrderModel.orders = orders;
-    sellerOrderModel.form = {};
+    sellerOrderModel.form= {};
     sellerOrderModel.formError = false;
     let id = [];
 
@@ -16,7 +16,7 @@ angular.module('demoAppModule').controller('sellerOrderModelCtrl', function ($ht
         }
     }
 
-    sellerOrderModel.transfer = () => {
+    sellerOrderModel.create = () => {
         if (invalidFormInput()) {
             sellerOrderModel.formError = true;
         } else {
@@ -28,8 +28,8 @@ angular.module('demoAppModule').controller('sellerOrderModelCtrl', function ($ht
             for (var j=0; j<id.length;j++){
                 const issueIOUEndpoint =
                     apiBaseURL +
-                    `notice-order?id=${id[j]}&driver=${driver}`;
-                $http.get(issueIOUEndpoint).then(
+                    `notice-order?id=${id[j]}&driver=${driver[j]}`;
+                $http.put(issueIOUEndpoint).then(
                     (result) => sellerOrderModel.displayMessage(result),
                     (result) => sellerOrderModel.displayMessage(result)
                 );
@@ -38,24 +38,25 @@ angular.module('demoAppModule').controller('sellerOrderModelCtrl', function ($ht
     };
 
     sellerOrderModel.displayMessage = (message) => {
-        const sellerMsgModel = $uibModal.open({
-            templateUrl: 'sellerOrderModel.html',
-            controller: 'sellerOrderCtrl',
-            controllerAs: 'SellerMsgModal',
+        const sellerOrderMsgModel = $uibModal.open({
+            templateUrl: 'sellerOrderMsgModel.html',
+            controller: 'sellerOrderMsgModelCtrl',
+            controllerAs: 'sellerOrderMsgModel',
             resolve: { message: () => message }
         });
 
-        sellerMsgModel.result.then(() => {}, () => {});
+        sellerOrderMsgModel.result.then(() => {}, () => {});
     };
 
     sellerOrderModel.cancel = () => $uibModalInstance.dismiss();
 
     function invalidFormInput() {
-        return sellerOrderModel.form.driver === undefined;
+        var a = (sellerOrderModel.form.driver === undefined)
+        return a;
     }
 });
 
-angular.module('demoAppModule').controller('sellerOrderCtrl', function ($uibModalInstance, message) {
-    const sellerMsgModel = this;
-    sellerMsgModel.message = message.data;
+angular.module('demoAppModule').controller('sellerOrderMsgModelCtrl', function ($uibModalInstance, message) {
+    const sellerOrderMsgModel = this;
+    sellerOrderMsgModel.message = message.data;
 });

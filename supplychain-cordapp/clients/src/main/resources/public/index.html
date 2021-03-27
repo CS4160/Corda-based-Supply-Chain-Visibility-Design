@@ -76,7 +76,7 @@ buyer
                 <div class="alert alert-danger" role="alert">
                     <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
                     <span class="sr-only">Error:</span>
-                    Enter valid IOU creation parameters
+                    Enter valid order creation parameters
                 </div>
             </div>
         </div>
@@ -99,6 +99,7 @@ seller
 -->
 
 <script type="text/ng-template" id="sellerOrderModel.html">
+    <div class="modal-content" style="width:900px">
     <div class="modal-header">
         <h4 class="modal-title">Confirm new Order</h4>
 
@@ -134,11 +135,17 @@ seller
                             <td class="vert-align">{{order.buyer}}</td>
                             <td class="vert-align">{{order.good}}</td>
                             <td class="vert-align">{{order.itinerary.location}}</td>
-                            <td class="form-group">
-                                <label for=("assignDriver"+order.buyer) class="control-label">Assign Driver for {{order.buyer}}}:</label>
-                                <select ng-model = "sellerOrderModel.form.driver[$index]" class="form-control" id=("assignDriver"+order.buyer)
-                                        ng-options="peer as peer for peer in sellerOrderModel.peers">
-                                </select>
+                            <div ng-show="!order.deliver">
+                                <td class="form-group">
+                                    <label for=("assignDriver"+order.buyer) class="control-label">Assign Driver for {{order.buyer}}}:</label>
+                                    <select ng-model = "sellerOrderModel.form.driver[$index]" class="form-control" id=("assignDriver"+order.buyer)
+                                            ng-options="peer as peer for peer in sellerOrderModel.peers">
+                                    </select>
+                            </div>
+                            <div ng-show="order.deliver">
+                                <td class="vert-align">{{order.deliver}}</td>
+                            </div>
+
 <!--                                <select ng-model = "sellerOrderModel.form.driver" class="form-control" id=("assignDriver"+order.buyer)>-->
 <!--                                    <option ng-repeat="peer in sellerOrderModel.peers" value="{peer}">{{peer}}</option>-->
 <!--                                </select>-->
@@ -147,6 +154,13 @@ seller
                             <td class="vert-align">{{order.itinerary.actualTime}}</td>
 
                         </tr>
+                        <div ng-show="sellerOrderModel.formError" class="form-group">
+                            <div class="alert alert-danger" role="alert">
+                                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                                <span class="sr-only">Error:</span>
+                                Enter valid driver creation parameters
+                            </div>
+                        </div>
                         </tbody>
                     </table>
                 </div>
@@ -158,6 +172,7 @@ seller
             </div>
         </div>
     </form>
+    </div>
 </script>
 
 <script type="text/ng-template" id="sellerOrderMsgModel.html">
@@ -171,18 +186,19 @@ driver
 -->
 
 <script type="text/ng-template" id="driverOrderModel.html">
+    <div class="modal-content" style="width:900px">
     <div class="modal-header">
         <h4 class="modal-title">Confirm new Order</h4>
     </div>
     <form>
         <div class="modal-body">
-            <div ng-show="!demoApp.orders.length" class="panel panel-primary">
+            <div ng-show="!driverOrderModel.orders.length" class="panel panel-primary">
                 <div class="panel-heading">
                     <h3 class="panel-title">There are no recorded orders</h3>
                 </div>
             </div>
 
-            <div ng-show="demoApp.orders.length" class="panel panel-primary">
+            <div ng-show="driverOrderModel.orders.length" class="panel panel-primary">
                 <div class="panel-heading">
                     <h3 class="panel-title">Recorded Orders:</h3>
                 </div>
@@ -198,17 +214,17 @@ driver
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="order in demoApp.orders">
+                        <tr ng-repeat="order in driverOrderModel.orders">
                             <td class="vert-align">{{order.seller}}</td>
-                            <td class="vert-align">{{order.itinerary.get(1)}}</td>
-                            <td class="vert-align">{{order.itinerary.get(0)}}</td>
+                            <td class="vert-align">{{order.good}}</td>
+                            <td class="vert-align">{{order.itinerary.location}}</td>
                             <td class="form-group">
-                                <label for="expectedtime" class="control-label">Expected time:</label>
-                                <input type="text" ng-model = "driverOrderModel.form.expectedtime",class="form-control" id="expectedtime">
+                                <label for="expectedtime+order.linearId.id" class="control-label">Expected time:</label>
+                                <input type="text" ng-model = "driverOrderModel.form.expectedtime",class="form-control" id="expectedtime+order.linearId.id">
                             </td>
                             <td class="form-group">
-                                <label for="arrivaltime" class="control-label">Arrival time:</label>
-                                <input type="text" ng-model = "driverOrderModel.form.arrivaltime",class="form-control" id="arrivaltime">
+                                <label for="arrivaltime+order.linearId.id" class="control-label">Arrival time:</label>
+                                <input type="text" ng-model = "driverOrderModel.form.arrivaltime",class="form-control" id="arrivaltime+order.linearId.id">
                             </td>
 
                         </tr>
@@ -223,6 +239,7 @@ driver
         </div>
         </div>
     </form>
+    </div>
 </script>
 
 <script type="text/ng-template" id="driverOrderMsgModel.html">
@@ -231,3 +248,6 @@ driver
     </div>
 </script>
 
+
+</body>
+</html>

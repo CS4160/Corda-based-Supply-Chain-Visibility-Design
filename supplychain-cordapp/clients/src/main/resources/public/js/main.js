@@ -34,14 +34,6 @@ angular.module('demoAppModule', ['ui.bootstrap']).controller('DemoAppCtrl', func
     /** Displays the  issuance modal.
     **/
     demoApp.openSellerOrderModel = () => {
-        // let id = [];
-        // if (demoApp.orders !== undefined) {
-        //     for(var j =0; j<demoApp.orders.length;j++){
-        //         id.push(demoApp.orders[j].linearId.id)
-        //     }
-        // }
-
-
         const sellerOrderModel = $uibModal.open({
             templateUrl: 'sellerOrderModel.html',
             controller: 'sellerOrderModelCtrl',
@@ -58,7 +50,7 @@ angular.module('demoAppModule', ['ui.bootstrap']).controller('DemoAppCtrl', func
     };
 
     /** Displays the IOU transfer modal. **/
-    demoApp.openDriverOrderModel = (id) => {
+    demoApp.openDriverOrderModel = () => {
         const driverOrderModel = $uibModal.open({
             templateUrl: 'driverOrderModel.html',
             controller: 'driverOrderModelCtrl',
@@ -66,7 +58,8 @@ angular.module('demoAppModule', ['ui.bootstrap']).controller('DemoAppCtrl', func
             resolve: {
                 apiBaseURL: () => apiBaseURL,
                 peers: () => peers,
-                id: () => id
+                orders:() => demoApp.orders
+                //id: () => id
             }
         });
 

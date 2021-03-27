@@ -1,15 +1,25 @@
 "use strict";
 
 // Similar to the IOU creation modal - see createIOUModal.js for comments.
-angular.module('demoAppModule').controller('driverOrderModelCtrl', function ($http, $uibModalInstance, $uibModal, apiBaseURL, peers, id) {
+angular.module('demoAppModule').controller('driverOrderModelCtrl', function ($http, $uibModalInstance, $uibModal, apiBaseURL, peers, orders) {
     const driverOrderModel = this;
 
     driverOrderModel.peers = peers;
-    driverOrderModel.id = id;
+    driverOrderModel.orders = orders;
     driverOrderModel.form = {};
     driverOrderModel.formError = false;
 
-    driverOrderModel.transfer = () => {
+
+    let id = [];
+
+    if (driverOrderModel.orders !== undefined) {
+        for(var j =0; j<driverOrderModel.orders.length;j++){
+            id.push(driverOrderModel.orders[j].linearId.id)
+        }
+    }
+
+
+    driverOrderModel.create = () => {
         if (invalidFormInput()) {
             driverOrderModel.formError = true;
         } else {
@@ -19,21 +29,37 @@ angular.module('demoAppModule').controller('driverOrderModelCtrl', function ($ht
             const expectedtime = driverOrderModel.form.expectedtime;
             const arrivaltime = driverOrderModel.form.arrivaltime;
             $uibModalInstance.close();
+            for (var j=0; j<id.length;j++){
+                if(expectedtime !== undefined){
+                        const issueIOUEndpoint =
+                            apiBaseURL +
+                            `driver-add?id=${id[j]}&expectedtime=${expectedtime}`;
 
-            const issueIOUEndpoint =
-                apiBaseURL +
-                `driver?id=${id}&expectedtime=${expectedtime}&&arrivaltime=${arrivaltime}`;
-
-            $http.get(issueIOUEndpoint).then(
-                (result) => driverOrderModel.displayMessage(result),
-                (result) => driverOrderModel.displayMessage(result)
+                            $http.put(issueIOUEndpoint).then(
+                             (result) => driverOrderModel.displayMessage(result),
+                             (result) => driverOrderModel.displayMessage(result)
             );
+             }
+
+                if(arrivaltime !==undefined){
+                      const issueDriverEndpoint=
+                      apiBaseURL + `driver-arrival?id=${id[j]}&arrivaltime=${arrivaltime}`;
+
+                      $http.put(issueDriverEndpoint).then(
+                      (result) => driverOrderModel.displayMessage(result),
+                      (result) => driverOrderModel.displayMessage(result)
+                     );
+                }
+
+            }
+
+
         }
     };
 
     driverOrderModel.displayMessage = (message) => {
-        const driverMsgModel = $uibModal.open({
-            templateUrl: 'driverOrderModel.html',
+        const driverOrderMsgModel = $uibModal.open({
+            templateUrl: 'driverOrderMsgModel.html',
             controller: 'driverOrderMsgModelCtrl',
             controllerAs: 'driverOrderMsgModel',
             resolve: { message: () => message }
@@ -45,7 +71,7 @@ angular.module('demoAppModule').controller('driverOrderModelCtrl', function ($ht
     driverOrderModel.cancel = () => $uibModalInstance.dismiss();
 
     function invalidFormInput() {
-        return (driverModel.form.expectedtime === undefined) || (driverModel.form.arrivaltime === undefined) ;
+        return (driverOrderModel.form.expectedtime === undefined) && (driverOrderModel.form.arrivaltime === undefined) ;
     }
 });
 
