@@ -36,11 +36,11 @@ angular.module('demoAppModule', ['ui.bootstrap']).controller('DemoAppCtrl', func
     }
 
     /** Displays the Buyer creation modal. */
-    demoApp.openCreateOrderModel = () => {
-        const createOrderModel = $uibModal.open({
-            templateUrl: 'createOrderModel.html',
-            controller: 'createOrderModelCtrl',
-            controllerAs: 'createOrderModel',
+    demoApp.openBuyerOrderModal = () => {
+        const buyerOrderModal = $uibModal.open({
+            templateUrl: 'buyerOrderModal.html',
+            controller: 'buyerOrderModalCtrl',
+            controllerAs: 'buyerOrderModal',
             resolve: {
                 apiBaseURL: () => apiBaseURL,
                 peers: () => demoApp.peers,
@@ -49,17 +49,17 @@ angular.module('demoAppModule', ['ui.bootstrap']).controller('DemoAppCtrl', func
         });
 
         // Ignores the modal result events.
-        createOrderModel.result.then(() => {}, () => {});
+        buyerOrderModal.result.then(() => {}, () => {});
     };
 
 
     /** Displays the  issuance modal.
     **/
-    demoApp.openSellerOrderModel = () => {
-        const sellerOrderModel = $uibModal.open({
-            templateUrl: 'sellerOrderModel.html',
-            controller: 'sellerOrderModelCtrl',
-            controllerAs: 'sellerOrderModel',
+    demoApp.openSellerOrderModal = () => {
+        const sellerOrderModal = $uibModal.open({
+            templateUrl: 'sellerOrderModal.html',
+            controller: 'sellerOrderModalCtrl',
+            controllerAs: 'sellerOrderModal',
             resolve: {
                 apiBaseURL: () => apiBaseURL,
                 peers: () => demoApp.peers,
@@ -69,15 +69,15 @@ angular.module('demoAppModule', ['ui.bootstrap']).controller('DemoAppCtrl', func
           }
         });
 
-        sellerOrderModel.result.then(() => {}, () => {});
+        sellerOrderModal.result.then(() => {}, () => {});
     };
 
     /** Displays the IOU transfer modal. **/
-    demoApp.openDriverOrderModel = () => {
-        const driverOrderModel = $uibModal.open({
-            templateUrl: 'driverOrderModel.html',
-            controller: 'driverOrderModelCtrl',
-            controllerAs: 'driverOrderModel',
+    demoApp.openDriverOrderModal = () => {
+        const driverOrderModal = $uibModal.open({
+            templateUrl: 'driverOrderModal.html',
+            controller: 'driverOrderModalCtrl',
+            controllerAs: 'driverOrderModal',
             resolve: {
                 apiBaseURL: () => apiBaseURL,
                 peers: () => demoApp.peers,
@@ -86,7 +86,7 @@ angular.module('demoAppModule', ['ui.bootstrap']).controller('DemoAppCtrl', func
             }
         });
 
-        driverOrderModel.result.then(() => {}, () => {});
+        driverOrderModal.result.then(() => {}, () => {});
     };
 
     demoApp.arrive = (id) => {
