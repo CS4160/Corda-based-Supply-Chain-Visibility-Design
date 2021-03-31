@@ -17,6 +17,7 @@ import net.corda.samples.supplychain.server.NodeRPCConnection
 import net.corda.samples.supplychain.states.OrderState
 import net.corda.samples.supplychain.states.Itinerary
 import net.corda.samples.supplychain.states.TransState
+import org.apache.qpid.proton.amqp.transport.End
 import net.corda.samples.supplychain.flows.OrderFlow.Initiator as Orderflow
 import net.corda.samples.supplychain.flows.NoticeFlow.Initiator as Noticeflow
 import net.corda.samples.supplychain.flows.AddItineraryFlow.Initiator as AddItineraryflow
@@ -28,11 +29,13 @@ import org.bouncycastle.asn1.x500.style.BCStyle
 
 
 import org.slf4j.LoggerFactory
+import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.http.MediaType.TEXT_PLAIN_VALUE
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -69,6 +72,15 @@ class MainController(rpc: NodeRPCConnection) {
     @GetMapping(value = [ "me" ], produces = [ APPLICATION_JSON_VALUE ])
     fun whoami() = mapOf("me" to me.toString())
 
+    @GetMapping(value = ["identity"], produces = [APPLICATION_JSON_VALUE])
+    fun getIdentity(): Map<String, String>  {
+        val indexStart = me.toString().indexOf("OU",0)+3
+        val indexEnd = me.toString().indexOf(",",0)
+
+        val identity = me.toString().substring(indexStart, indexEnd)
+        return mapOf(Pair("identity", identity))
+    }
+
     /**
      * Returns all parties registered with the [NetworkMapService]. These names can be used to look up identities
      * using the [IdentityService].
@@ -87,9 +99,14 @@ class MainController(rpc: NodeRPCConnection) {
      * Hint - Use [rpcOps] to query the vault all unconsumed [IOUState]s
      */
     @GetMapping(value = [ "orders" ], produces = [ APPLICATION_JSON_VALUE ])
-    fun getOrders(): List<StateAndRef<ContractState>> {
+    fun getOrders(@RequestParam(value = "state_type") state_type: String): List<StateAndRef<ContractState>> {
         // Filter by state type: IOU.
-        return proxy.vaultQueryBy<OrderState>().states
+        if (state_type == "orderState"){
+            return proxy.vaultQueryBy<OrderState>().states
+        }
+        else{
+            return proxy.vaultQueryBy<TransState>().states
+        }
     }
 
     @PutMapping(value = [ "create-order" ], produces = [ TEXT_PLAIN_VALUE ])
@@ -125,30 +142,62 @@ class MainController(rpc: NodeRPCConnection) {
                     ?: throw IllegalArgumentException("Unknown party name.")
             try{
                 val result = proxy.startTrackedFlow(::Noticeflow, linearId, newdriver).returnValue.get()
-                return ResponseEntity.status(HttpStatus.CREATED).body("Order id $id transferred by $result.")
+                return ResponseEntity.status(HttpStatus.CREATED).body("Order id $id transferred by $newdriver.")
             } catch (e: Exception) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.message)
             }
 
     }
 
-
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @PutMapping(value = [ "driver-add" ], produces = [ TEXT_PLAIN_VALUE ])
     fun addItinerary(@RequestParam(value = "id") id: String,
-                  @RequestParam(value = "expectedtime") expectedtime:Date) {
+                  @RequestParam(value = "expectedtime") expectedtime:String) {
         val linearId = UniqueIdentifier.fromString(id)
-        proxy.startTrackedFlow(::AddItineraryflow, linearId, expectedtime)
-        proxy.startTrackedFlow(::Updateorder,linearId)
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val expectedTime = formatter.parse(expectedtime)
+        proxy.startTrackedFlow(::AddItineraryflow, linearId, expectedTime)
+//        proxy.startTrackedFlow(::Updateorder,linearId)
     }
 
 
     @PutMapping(value = [ "driver-arrival" ], produces = [ TEXT_PLAIN_VALUE ])
     fun arrivalOrder(@RequestParam(value = "id") id: String,
-                     @RequestParam(value = "arrivaltime") arrivaltime:Date) {
+                     @RequestParam(value = "arrivaltime") arrivaltime:String) {
         val linearId = UniqueIdentifier.fromString(id)
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val arrivaltime = formatter.parse(arrivaltime)
         proxy.startTrackedFlow(::Arrivalorder, linearId, arrivaltime)
-        proxy.startTrackedFlow(::Completeorder,linearId)
+//        proxy.startTrackedFlow(::Completeorder,linearId)
     }
+
+    @PutMapping(value = [ "update-order" ], produces = [ TEXT_PLAIN_VALUE ])
+    fun updateOrder(@RequestParam(value = "id") id: String): ResponseEntity<String> {
+        val linearId = UniqueIdentifier.fromString(id)
+        proxy.startTrackedFlow(::Updateorder,linearId)
+
+        try{
+            return ResponseEntity.status(HttpStatus.CREATED).body("Order id $id updated")
+        } catch (e: Exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.message)
+        }
+
+    }
+
+    @PutMapping(value = [ "complete-order" ], produces = [ TEXT_PLAIN_VALUE ])
+    fun completeOrder(@RequestParam(value = "id") id: String): ResponseEntity<String> {
+        val linearId = UniqueIdentifier.fromString(id)
+        proxy.startTrackedFlow(::Completeorder,linearId)
+
+        try{
+            return ResponseEntity.status(HttpStatus.CREATED).body("Order id $id completed")
+        } catch (e: Exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.message)
+        }
+
+    }
+
+
 
 
 

@@ -25,6 +25,7 @@ data class OrderState(
         val deliver: Party?,
         val good:String,
         val itinerary: Itinerary,
+        val status:String,
         override val linearId: UniqueIdentifier = UniqueIdentifier()) : LinearState {
     override val participants = listOf(buyer, seller)
 }

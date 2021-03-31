@@ -25,6 +25,7 @@ class OrderAndTransContract : Contract {
                 "The single output is of type OrderState" using (tx.outputsOfType<OrderState>().size == 1)
                 val output = tx.outputsOfType<OrderState>().single()
 //                "The buyer and seller are the proposer and the proposee" using (setOf(output.buyer, output.seller) == setOf(output.proposer, output.proposee))
+                "The status is initial" using(output.status == "Initial")
 
                 "The buyer is a required signer" using (cmd.signers.contains(output.buyer.owningKey))
                 "The seller is a required signer" using (cmd.signers.contains(output.seller.owningKey))
@@ -82,7 +83,7 @@ class OrderAndTransContract : Contract {
                 "The buyer is unmodified in the output" using (input.buyer == output.buyer)
                 "The seller is unmodified in the output" using (input.seller == output.seller)
                 "The itinerary now has an expected time" using (output.itinerary.expectedTime!=null)
-//                "The status is Update" using(output.status == "Update")
+                "The status is Update" using(output.status == "Updated")
 
 
 
@@ -126,7 +127,7 @@ class OrderAndTransContract : Contract {
                 "The seller is unmodified in the output" using (input.seller == output.seller)
                 "The itinerary now has an expected time" using (output.itinerary.expectedTime!=null)
                 "The itinerary now has an actual time" using (output.itinerary.actualTime!=null)
-//                "The status is Complete" using(output.status == "Complete")
+                "The status is Complete" using(output.status == "Completed")
 
 
 

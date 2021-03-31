@@ -32,7 +32,7 @@ object UpdateFlow {
 
 
             // Creating the output.
-            val output = OrderState(order.buyer, order.seller, transState.deliver,order.good, transState.itinerary, linearId = orderId)
+            val output = OrderState(order.buyer, order.seller, transState.deliver,order.good, transState.itinerary, status = "Updated", linearId = orderId)
 
             // Creating the command.
             val requiredSigners = listOf(order.buyer.owningKey, order.seller.owningKey)

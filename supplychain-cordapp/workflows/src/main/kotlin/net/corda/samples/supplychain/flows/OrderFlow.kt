@@ -26,7 +26,7 @@ object OrderFlow {
                 else -> counterparty to ourIdentity
             }
             val itinerary = Itinerary(location, null, null)
-            val output = OrderState(buyer, seller,null, good, itinerary)
+            val output = OrderState(buyer, seller,null, good, itinerary,"Initial")
 
             // Creating the command.
             val commandType = OrderAndTransContract.Commands.Order()

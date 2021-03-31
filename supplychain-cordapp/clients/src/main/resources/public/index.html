@@ -40,11 +40,181 @@ COMING WEEKS, WE'LL WRITE A TUTORIAL ON HOW BEST TO DO THIS.
         <div class="navbar-header">
             <a class="navbar-brand" href="#">{{demoApp.thisNode}}</a>
         </div>
-        <button ng-click="demoApp.openCreateOrderModel()" type="button" class="btn btn-primary navbar-btn">Buyer</button>
-        <button ng-click="demoApp.openSellerOrderModel()" type="button" class="btn btn-primary navbar-btn">Seller</button>
-        <button ng-click="demoApp.openDriverOrderModel()" type="button" class="btn btn-primary navbar-btn">Driver</button>
         <button ng-click="demoApp.refresh()" type="button" class="btn btn-default navbar-btn"><span
                 class="glyphicon glyphicon-refresh"></span></button>
+        <div ng-if="demoApp.identity === 'Buyer'">
+            <button ng-click="demoApp.openCreateOrderModel()" type="button" class="btn btn-primary navbar-btn">{{demoApp.identity}}</button>
+
+            <div ng-show="demoApp.orderState.length" class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Recorded Orders:</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Seller</th>
+                            <th>Good</th>
+                            <th>Location</th>
+                            <th>Driver</th>
+                            <th>Expected time</th>
+                            <th>Arrival time</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="order in demoApp.orderState">
+                            <!--                        <tr ng-repeat="order in demoApp.orders">-->
+                            <td class="vert-align">{{order.seller}}</td>
+                            <td class="vert-align">{{order.good}}</td>
+                            <td class="vert-align">{{order.itinerary.location}}</td>
+                            <div ng-show="order.deliver">
+                                <td class="vert-align">{{order.deliver}}</td>
+                            </div>
+                            <td class="vert-align">{{order.itinerary.expectedTime}}</td>
+                            <td class="vert-align">{{order.itinerary.actualTime}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+        </div>
+        </div>
+
+        <div ng-if="demoApp.identity === 'Seller'">
+            <button ng-click="demoApp.openSellerOrderModel()" type="button" class="btn btn-primary navbar-btn">{{demoApp.identity}}</button>
+
+            <div class="panel-heading">
+                <h3 class="panel-title">Recorded Orders:</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Buyer</th>
+                        <th>Good</th>
+                        <th>Location</th>
+                        <th>Driver</th>
+                        <th>Expected time</th>
+                        <th>Arrival time</th>
+                    </tr>
+                    </thead>
+                    <tbody ng-if = "!demoApp.transState">
+                    <tr ng-repeat="order in demoApp.orderState">
+                        <!--                        <tr ng-repeat="order in demoApp.orders">-->
+                        <td class="vert-align">{{order.buyer}}</td>
+                        <td class="vert-align">{{order.good}}</td>
+                        <td class="vert-align">{{order.itinerary.location}}</td>
+                        <div ng-show="!order.deliver">
+                            <td class="form-group">
+                                <label for=("assignDriver"+order.buyer) class="control-label">Assign Driver for {{order.buyer}}}:</label>
+                                <select ng-model = "sellerOrderModel.form.driver[$index]" class="form-control" id=("assignDriver"+order.buyer)
+                                        ng-options="peer as peer for peer in demoApp.peers">
+                                </select>
+                        </div>
+                        <div ng-show="order.deliver">
+                            <td class="vert-align">{{order.deliver}}</td>
+                        </div>
+
+                        <!--                                <select ng-model = "sellerOrderModel.form.driver" class="form-control" id=("assignDriver"+order.buyer)>-->
+                        <!--                                    <option ng-repeat="peer in sellerOrderModel.peers" value="{peer}">{{peer}}</option>-->
+                        <!--                                </select>-->
+                        </td>
+                        <td class="vert-align">{{order.itinerary.expectedTime}}</td>
+                        <td class="vert-align">{{order.itinerary.actualTime}}</td>
+<!--                        <td class="vert-align"><button ng-click="sellerOrderModel.create()" type="button" class="btn btn-primary">Confrim</button></td>-->
+
+                    </tr>
+                    <div ng-show="sellerOrderModel.formError" class="form-group">
+                        <div class="alert alert-danger" role="alert">
+                            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                            <span class="sr-only">Error:</span>
+                            Enter valid driver creation parameters
+                        </div>
+                    </div>
+                    </tbody>
+
+                    <tbody ng-if = "demoApp.transState">
+                    <tr ng-repeat="order in demoApp.transState">
+                        <!--                        <tr ng-repeat="order in demoApp.orders">-->
+                        <td class="vert-align">{{order.buyer}}</td>
+                        <td class="vert-align">{{order.good}}</td>
+                        <td class="vert-align">{{order.itinerary.location}}</td>
+                        <div ng-show="order.deliver">
+                            <td class="vert-align">{{order.deliver}}</td>
+                        </div>
+
+                        <!--                                <select ng-model = "sellerOrderModel.form.driver" class="form-control" id=("assignDriver"+order.buyer)>-->
+                        <!--                                    <option ng-repeat="peer in sellerOrderModel.peers" value="{peer}">{{peer}}</option>-->
+                        <!--                                </select>-->
+                        </td>
+                        <td class="vert-align">{{order.itinerary.expectedTime}}</td>
+                        <td class="vert-align">{{order.itinerary.actualTime}}</td>
+                        <!--                        <td class="vert-align"><button ng-click="sellerOrderModel.create()" type="button" class="btn btn-primary">Confrim</button></td>-->
+
+                    </tr>
+                    <div ng-show="sellerOrderModel.formError" class="form-group">
+                        <div class="alert alert-danger" role="alert">
+                            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                            <span class="sr-only">Error:</span>
+                            Enter valid driver creation parameters
+                        </div>
+                    </div>
+                    </tbody>
+
+                </table>
+            </div>
+
+        </div>
+
+        <div ng-if="demoApp.identity === 'Trucker'">
+            <button ng-click="demoApp.openDriverOrderModel()" type="button" class="btn btn-primary navbar-btn">{{demoApp.identity}}</button>
+
+            <div class="panel-heading">
+                <h3 class="panel-title">Recorded Orders:</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Buyer</th>
+                        <th>Good</th>
+                        <th>Location</th>
+                        <th>Driver</th>
+                        <th>Expected time</th>
+                        <th>Arrival time</th>
+                    </tr>
+                    </thead>
+                    <tbody ng-if = "demoApp.transState">
+                    <tr ng-repeat="order in demoApp.transState" ng-show="order.status !== 'Load' && order.status !== 'Arrival'">
+                        <!--                        <tr ng-repeat="order in demoApp.orders">-->
+                        <td class="vert-align">{{order.buyer}}</td>
+                        <td class="vert-align">{{order.good}}</td>
+                        <td class="vert-align">{{order.itinerary.location}}</td>
+                        <div ng-show="order.deliver">
+                            <td class="vert-align">{{order.deliver}}</td>
+                        </div>
+                        </td>
+                        <td class="vert-align">{{order.itinerary.expectedTime}}</td>
+                        <td class="vert-align">{{order.itinerary.actualTime}}</td>
+                        <td class="vert-align"><button ng-click="demoApp.arrive(order.linearId.id)" type="button" class="btn btn-primary">Arrive</button></td>
+
+                    </tr>
+                    <div ng-show="sellerOrderModel.formError" class="form-group">
+                        <div class="alert alert-danger" role="alert">
+                            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                            <span class="sr-only">Error:</span>
+                            Enter valid driver creation parameters
+                        </div>
+                    </div>
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+
+        <!--        <button ng-click="demoApp.openCreateOrderModel()" type="button" class="btn btn-primary navbar-btn">Buyer</button>-->
+<!--        <button ng-click="demoApp.openSellerOrderModel()" type="button" class="btn btn-primary navbar-btn">Seller</button>-->
+<!--        <button ng-click="demoApp.openDriverOrderModel()" type="button" class="btn btn-primary navbar-btn">Driver</button>-->
+
     </div>
 </nav>
 
@@ -107,13 +277,13 @@ seller
     </div>
     <form>
         <div class="modal-body">
-            <div ng-show="!sellerOrderModel.orders.length" class="panel panel-primary">
+            <div ng-show="!sellerOrderModel.orderState.length" class="panel panel-primary">
                 <div class="panel-heading">
                     <h3 class="panel-title">There are no recorded orders</h3>
                 </div>
             </div>
 
-            <div ng-show="sellerOrderModel.orders.length" class="panel panel-primary">
+            <div ng-show="sellerOrderModel.orderState.length" class="panel panel-primary">
                 <div class="panel-heading">
                     <h3 class="panel-title">Recorded Orders:</h3>
                 </div>
@@ -130,7 +300,7 @@ seller
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="order in sellerOrderModel.orders">
+                        <tr ng-repeat="order in sellerOrderModel.orderState">
 <!--                        <tr ng-repeat="order in demoApp.orders">-->
                             <td class="vert-align">{{order.buyer}}</td>
                             <td class="vert-align">{{order.good}}</td>
@@ -152,6 +322,7 @@ seller
                             </td>
                             <td class="vert-align">{{order.itinerary.expectedTime}}</td>
                             <td class="vert-align">{{order.itinerary.actualTime}}</td>
+                            <td class="vert-align"><button ng-click="sellerOrderModel.create([$index])" type="button" class="btn btn-primary">Confrim</button></td>
 
                         </tr>
                         <div ng-show="sellerOrderModel.formError" class="form-group">
@@ -166,10 +337,10 @@ seller
                 </div>
 
             </div>
-            <div class="modal-footer">
-                <button ng-click="sellerOrderModel.cancel()" type="button" class="btn btn-default">Cancel</button>
-                <button ng-click="sellerOrderModel.create()" type="button" class="btn btn-primary">Confirm</button>
-            </div>
+<!--            <div class="modal-footer">-->
+<!--                <button ng-click="sellerOrderModel.cancel()" type="button" class="btn btn-default">Cancel</button>-->
+<!--                <button ng-click="sellerOrderModel.create()" type="button" class="btn btn-primary">Confirm</button>-->
+<!--            </div>-->
         </div>
     </form>
     </div>
@@ -210,23 +381,25 @@ driver
                             <th>Good</th>
                             <th>Location</th>
                             <th>Expected time</th>
-                            <th>Arrival time</th>
+<!--                            <th>Arrival time</th>-->
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="order in driverOrderModel.orders">
+                        <tr ng-repeat="order in driverOrderModel.orders", ng-show="order.status === 'Load'">
                             <td class="vert-align">{{order.seller}}</td>
                             <td class="vert-align">{{order.good}}</td>
                             <td class="vert-align">{{order.itinerary.location}}</td>
                             <td class="form-group">
                                 <label for="expectedtime+order.linearId.id" class="control-label">Expected time:</label>
-                                <input type="text" ng-model = "driverOrderModel.form.expectedtime",class="form-control" id="expectedtime+order.linearId.id">
+                                <input type="datetime-local" ng-model = "driverOrderModel.form.expectedtime[$index]",class="form-control" id="expectedtime+order.linearId.id">
                             </td>
-                            <td class="form-group">
-                                <label for="arrivaltime+order.linearId.id" class="control-label">Arrival time:</label>
-                                <input type="text" ng-model = "driverOrderModel.form.arrivaltime",class="form-control" id="arrivaltime+order.linearId.id">
-                            </td>
-
+<!--                            <td class="form-group">-->
+<!--                                <label for="arrivaltime+order.linearId.id" class="control-label">Arrival time:</label>-->
+<!--                                <input type="datetime-local" ng-model = "driverOrderModel.form.arrivaltime[$index]",class="form-control" id="arrivaltime+order.linearId.id">-->
+<!--                            </td>-->
+                            <td class="vert-align">{{order.itinerary.expectedTime}}</td>
+                            <td class="vert-align">{{order.itinerary.actualTime}}</td>
+                            <td class="vert-align"><button ng-click="driverOrderModel.accept([$index])" type="button" class="btn btn-primary">Confrim</button></td>
                         </tr>
                         </tbody>
                     </table>
@@ -234,8 +407,8 @@ driver
 
         </div>
         <div class="modal-footer">
-            <button ng-click="driverOrderModel.cancel()" type="button" class="btn btn-default">Cancel</button>
-            <button ng-click="driverOrderModel.create()" type="button" class="btn btn-primary">Confirm</button>
+            <button ng-click="driverOrderModel.cancel()" type="button" class="btn btn-default">reject order</button>
+<!--            <button ng-click="driverOrderModel.accept()" type="button" class="btn btn-primary">accept order</button>-->
         </div>
         </div>
     </form>

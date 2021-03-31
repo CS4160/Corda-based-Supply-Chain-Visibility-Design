@@ -1,11 +1,14 @@
 "use strict";
 
-angular.module('demoAppModule').controller('createOrderModelCtrl', function($http, $uibModalInstance, $uibModal, apiBaseURL, peers) {
+angular.module('demoAppModule').controller('createOrderModelCtrl', function($http, $uibModalInstance, $uibModal, apiBaseURL, peers, orders) {
     const createOrderModel = this;
 
     createOrderModel.peers = peers;
     createOrderModel.form = {};
     createOrderModel.formError = false;
+    createOrderModel.orders = orders;
+
+
 
     /** Validate and create an IOU. */
     createOrderModel.create = () => {
