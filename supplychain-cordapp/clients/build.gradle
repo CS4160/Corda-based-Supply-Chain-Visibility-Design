@@ -12,7 +12,7 @@ apply plugin: 'kotlin'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'net.corda.plugins.cordformation'
 apply plugin: 'net.corda.plugins.quasar-utils'
-apply plugin: 'org.springframework.boot'
+
 
 sourceSets {
     main {
@@ -92,11 +92,11 @@ task runAppleServer(type: JavaExec, dependsOn: jar) {
     main = 'net.corda.samples.supplychain.server.ServerKt'
     args '--server.port=11000', '--config.rpc.host=localhost', '--config.rpc.port=10017', '--config.rpc.username=user1', '--config.rpc.password=test'
 }
-//FIXME: Could not resolve placeholder 'config.rpc.host' in value "${config.rpc.host}"
-task runWebServer(type: JavaExec, dependsOn: jar) {
-    classpath = sourceSets.main.runtimeClasspath
-    main = 'net.corda.samples.supplychain.server.ServerKt'
-
-    println(myargs)
-    args myargs
-}
+////FIXME: Could not resolve placeholder 'config.rpc.host' in value "${config.rpc.host}"
+//task runWebServer(type: JavaExec, dependsOn: jar) {
+//    classpath = sourceSets.main.runtimeClasspath
+//    main = 'net.corda.samples.supplychain.server.ServerKt'
+//
+//    println(myargs)
+//    args myargs
+//}
