@@ -1,11 +1,12 @@
 #!/bin/bash
 
-CLONED_NODE_NAME="Alice"
-NEW_NODE_NAME="AliceCopy"
+CLONED_NODE_NAME="Template"
+NEW_NODE_NAME="Tim"
+NEW_NODE_CONF_NAME="O=Tim,L=Rotterdam,C=NL,OU=Trucker"
 PUBLIC_ADDRESS="127.0.0.1"
-P2P_PORT="10030"
-RPC_ADDR_PORT="10031"
-RPC_ADMIN_ADDR_PORT="10060"
+P2P_PORT="10027"
+RPC_ADDR_PORT="10028"
+RPC_ADMIN_ADDR_PORT="10029"
 
 if [ -d $NEW_NODE_NAME ]
 then
@@ -40,7 +41,7 @@ curl -o certificates/network-root-truststore.jks http://${PUBLIC_ADDRESS}:8080/t
 (
   cat >node.conf <<EOT
 devMode=true
-myLegalName="O=$NEW_NODE_NAME,L=London,C=GB"
+myLegalName="${NEW_NODE_CONF_NAME}"
 p2pAddress="${PUBLIC_ADDRESS}:${P2P_PORT}"
 rpcSettings {
     address="localhost:${RPC_ADDR_PORT}"
