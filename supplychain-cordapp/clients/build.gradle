@@ -87,11 +87,43 @@ task runTomServer(type: JavaExec, dependsOn: jar) {
     args '--server.port=10070', '--config.rpc.host=localhost', '--config.rpc.port=10008', '--config.rpc.username=user1', '--config.rpc.password=test'
 }
 
-task runAppleServer(type: JavaExec, dependsOn: jar) {
+task runAHServer(type: JavaExec, dependsOn: jar) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'net.corda.samples.supplychain.server.ServerKt'
     args '--server.port=11000', '--config.rpc.host=localhost', '--config.rpc.port=10017', '--config.rpc.username=user1', '--config.rpc.password=test'
 }
+
+task runAppleServer(type: JavaExec, dependsOn: jar) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'net.corda.samples.supplychain.server.ServerKt'
+    args '--server.port=10071', '--config.rpc.host=localhost', '--config.rpc.port=10020', '--config.rpc.username=user1', '--config.rpc.password=test'
+}
+
+task runAmazonServer(type: JavaExec, dependsOn: jar) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'net.corda.samples.supplychain.server.ServerKt'
+    args '--server.port=10072', '--config.rpc.host=localhost', '--config.rpc.port=10023', '--config.rpc.username=user1', '--config.rpc.password=test'
+}
+
+task runBolServer(type: JavaExec, dependsOn: jar) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'net.corda.samples.supplychain.server.ServerKt'
+    args '--server.port=10073', '--config.rpc.host=localhost', '--config.rpc.port=10026', '--config.rpc.username=user1', '--config.rpc.password=test'
+}
+
+task runThomasServer(type: JavaExec, dependsOn: jar) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'net.corda.samples.supplychain.server.ServerKt'
+    args '--server.port=10074', '--config.rpc.host=localhost', '--config.rpc.port=10029', '--config.rpc.username=user1', '--config.rpc.password=test'
+}
+
+task runTimServer(type: JavaExec, dependsOn: jar) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'net.corda.samples.supplychain.server.ServerKt'
+    args '--server.port=10075', '--config.rpc.host=localhost', '--config.rpc.port=10031', '--config.rpc.username=user1', '--config.rpc.password=test'
+}
+
+
 ////FIXME: Could not resolve placeholder 'config.rpc.host' in value "${config.rpc.host}"
 //task runWebServer(type: JavaExec, dependsOn: jar) {
 //    classpath = sourceSets.main.runtimeClasspath

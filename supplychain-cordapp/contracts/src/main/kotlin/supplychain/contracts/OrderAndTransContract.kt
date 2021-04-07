@@ -62,7 +62,8 @@ class OrderAndTransContract : Contract {
                 "The buyer is unmodified in the output" using (input.buyer == output.buyer)
                 "The seller is unmodified in the output" using (input.seller == output.seller)
                 "The itinerary now has a expected time" using (output.itinerary.expectedTime!=null)
-                "The status is AddItinerary" using(output.status == "AddItinerary")
+                "The input status is AddItinerary" using(input.status == "Load")
+                "The output status is AddItinerary" using(output.status == "AddItinerary")
 
 
 
@@ -83,7 +84,8 @@ class OrderAndTransContract : Contract {
                 "The buyer is unmodified in the output" using (input.buyer == output.buyer)
                 "The seller is unmodified in the output" using (input.seller == output.seller)
                 "The itinerary now has an expected time" using (output.itinerary.expectedTime!=null)
-                "The status is Update" using(output.status == "Updated")
+                "The input status is Update" using(input.status == "Initial")
+                "The output status is Update" using(output.status == "Updated")
 
 
 
@@ -105,7 +107,8 @@ class OrderAndTransContract : Contract {
                 "The seller is unmodified in the output" using (input.seller == output.seller)
                 "The itinerary now has an expected time" using (output.itinerary.expectedTime!=null)
                 "The itinerary now has an actual time" using (output.itinerary.actualTime!=null)
-                "The status is Arrival" using(output.status == "Arrival")
+                "The input status is AddItinerary" using(input.status == "AddItinerary")
+                "The output status is Arrival" using(output.status == "Arrival")
 
 
 
@@ -115,7 +118,7 @@ class OrderAndTransContract : Contract {
 
             is Commands.Deliver -> requireThat {
                 "There is exactly one input" using (tx.inputStates.size == 1)
-                "The single input is of type TransState" using (tx.inputsOfType<OrderState>().size == 1)
+                "The single input is of type OrderState" using (tx.inputsOfType<OrderState>().size == 1)
                 "The single output is of type OrderState" using (tx.outputsOfType<OrderState>().size == 1)
 
 
@@ -127,7 +130,8 @@ class OrderAndTransContract : Contract {
                 "The seller is unmodified in the output" using (input.seller == output.seller)
                 "The itinerary now has an expected time" using (output.itinerary.expectedTime!=null)
                 "The itinerary now has an actual time" using (output.itinerary.actualTime!=null)
-                "The status is Complete" using(output.status == "Completed")
+                "The input status is Updated" using(input.status == "Updated")
+                "The output status is Complete" using(output.status == "Completed")
 
 
 

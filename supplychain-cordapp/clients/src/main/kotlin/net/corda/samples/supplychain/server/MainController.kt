@@ -10,6 +10,8 @@ import net.corda.core.messaging.startFlow
 import net.corda.core.messaging.startTrackedFlow
 import net.corda.core.messaging.vaultQueryBy
 import net.corda.core.node.NodeInfo
+import net.corda.core.node.services.queryBy
+import net.corda.core.node.services.vault.QueryCriteria
 import net.corda.samples.supplychain.contracts.OrderAndTransContract
 import net.corda.samples.supplychain.flows.*
 
@@ -187,8 +189,13 @@ class MainController(rpc: NodeRPCConnection) {
     @PutMapping(value = [ "complete-order" ], produces = [ TEXT_PLAIN_VALUE ])
     fun completeOrder(@RequestParam(value = "id") id: String): ResponseEntity<String> {
         val linearId = UniqueIdentifier.fromString(id)
-        proxy.startTrackedFlow(::Completeorder,linearId)
 
+        val orderCriteria = QueryCriteria.LinearStateQueryCriteria(linearId = listOf(linearId))
+        val state = proxy.vaultQueryBy<OrderState>(orderCriteria).states.single().state.data
+
+        if(state.status == "Updated") {
+            proxy.startTrackedFlow(::Completeorder, linearId)
+        }
         try{
             return ResponseEntity.status(HttpStatus.CREATED).body("Order id $id completed")
         } catch (e: Exception) {
