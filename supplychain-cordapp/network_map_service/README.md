@@ -1,3 +1,5 @@
+<!---
+
 # Network Map Service
 
 The network map service is cloned from this github https://github.com/roastario/spring-boot-network-map. Although the author provides an example of using docker, we prefer not to use docker right now. It would be much easier to run shell script directly. 
@@ -56,3 +58,5 @@ java -jar corda.jar
 
 ## STEP 6: 
 Repeat the step 5 if you need to create another new node.
+
+--->

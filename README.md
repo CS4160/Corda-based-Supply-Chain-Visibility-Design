@@ -4,7 +4,12 @@ This CorDapp shows how our supply chain visibility blockchain network could comp
 The Customer, Supplier, and Trucker Interfaces are also available in our CorDapp.
 
 ## Usage
-We recommend you to use IntelliJ IDEA to open this project, since it can auto-import gradle project.
+Please follow the instruction on [Corda website](https://docs.corda.net/docs/corda-os/4.7/getting-set-up.html) for installation. 
+
+
+### Environment
+Ubuntu 18.04 
+
 
 ### Network Map Service
 
@@ -12,18 +17,16 @@ The network map service is cloned from this Github https://github.com/roastario/
 
 In the following instructions, we will run a network map service first and then add nodes to the network one by one.
 
-#### Envrionment
-###### Ubuntu 18.04
-
 #### STEP 1: Build network map servie and create a notary
 
 ```bash
-sh run_build_notary_nms.sh
+cd <path-to-CS4160>/Corda-based-Supply-Chain-Visibility-Design/supplychain-cordapp/network_map_service/
+./run_build_notary_nms.sh
 ```
 
 #### STEP 2: Run network map service
 ```bash
-sh run_network_map_service.sh
+./run_network_map_service.sh
 ```
 
 #### STEP 3: Run notary
@@ -32,41 +35,45 @@ cd notary
 sh run-node.sh
 ```
 
-#### STEP 4: Build the Cordapp and Predefined Nodes
-The predefined nodes are configured in <path-to-CS4160>/CS4160/supplychain-cordapp/
+#### STEP 4: Build the Cordapp Template Nodes
+The predefined nodes are configured in <path-to-CS4160>/Corda-based-Supply-Chain-Visibility-Design/supplychain-cordapp/
 build.gradle 
 ```bash
-cd Corda-based-Supply-Chain-Visibility-Design/supplychain-cordapp/
+cd <path-to-CS4160>/Corda-based-Supply-Chain-Visibility-Design/supplychain-cordapp/
 ./gradlew deployNodes
 cd network_map_service/
-cp -r Corda-based Supply Chain Visibility Design/supplychain-cordapp/build/nodes/${PartyName} .
-```
-Before we run the script for cloning, we need to carefully edit several variables in run_clone_node.sh. 
-Here is an example. Please note that the port should not be reused. In other words, you need to use a different port for different nodes.
-```bash
-CLONED_NODE_NAME="Alice"
-NEW_NODE_NAME="AliceCopy"
-PUBLIC_ADDRESS="127.0.0.1"
-P2P_PORT="10030"
-RPC_ADDR_PORT="10031"
-RPC_ADMIN_ADDR_PORT="10060"
-```
-After the configuration, we can clone and register the new node to the network map server now.
-```bash
-sh run_clone_node.sh
+cp -r <path-to-CS4160>/Corda-based-Supply-Chain-Visibility-Design/supplychain-cordapp/build/nodes/${PartyName} Template
 ```
 
 #### STEP 5: RUN the NEW Registered Node
+
+Before we run the script for cloning, we need to carefully edit several variables in run_clone_node.sh. 
+There are five examples written in config_demo.txt. Please note that the port should not be reused. In other words, you need to use a different port for different nodes.
 ```bash
-cd ${NewPartyName}
+CLONED_NODE_NAME="Template"
+NEW_NODE_NAME="Alice"
+NEW_NODE_CONF_NAME="O=Alice,L=Deflt,C=NL,OU=Buyer"
+PUBLIC_ADDRESS="127.0.0.1"
+P2P_PORT="10005"
+RPC_ADDR_PORT="10006"
+RPC_ADMIN_ADDR_PORT="10046"
+```
+After the configuration, we can clone and register the new node to the network map server now.
+```bash
+./run_clone_node.sh
+```
+
+Configuration and registration above are only required for new nodes. Next time when you run a registered node, you should directly execute the command below.  
+```bash
+cd ${NEW_NODE_NAME} 
 java -jar corda.jar
 ```
 
 #### STEP 6: 
-Repeat the step 5 if you need to create another new node.
+Repeat the step 5 to create other nodes according to the configuration in config_demo.txt.
 
 #### STEP 7:
-After having completed adding new nodes, we should add several task `runNodeNameServer` commands manually in the `build.gradle` file in the clients folder. At this step, we will remember the RPC connection address of each new added nodes. An example of commands is shown as follows:
+After having added new nodes, we should add several task `runNodeNameServer` commands manually in the `build.gradle` file in the clients folder. At this step, we will remember the RPC connection address of each new added nodes. An example of commands is shown as follows:
 ```kotlin
 task runAppleServer(type: JavaExec, dependsOn: jar) {
     classpath = sourceSets.main.runtimeClasspath
