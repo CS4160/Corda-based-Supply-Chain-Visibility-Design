@@ -131,7 +131,7 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
         }
     }
     node {
-        name "O=Alice,L=Deflt,C=NL,OU=Buyer"
+        name "O=Alice,L=Delft,C=NL,OU=Buyer"
         p2pPort 10005
         rpcSettings {
             useSsl false
