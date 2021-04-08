@@ -141,7 +141,7 @@ For Node Tom:`localhost:10070`, you could see the Trucker interface in the webse
 ![image](Images/seller2.png)
 ![image](Images/trucker1.png)
 
-As the above images show, the Trucker Interface consists of two main parts: Uncompleted Orders and Complete Orders. Initially, As we can see in the Trucker interface, the trucker can click "accept order" button to check all orders assigned to this trucker.  Subsequently, the trucker inputs the expected time to a specific order and starts shipment. All the orders that are in the shipment will be present in the uncompleted orders. A trucker can click "arrive" button when the shipment has been completed, after which time this order is shown in the completed order area. As the requirement of this project, all the buyer’s information is invisible in the trucker interface.
+As the above images show, the Trucker Interface consists of two main parts: Uncompleted Orders and Complete Orders. Initially, As we can see in the Trucker interface, the trucker can click "accept order" button to check all orders assigned to this trucker.  Subsequently, the trucker inputs the expected time to a specific order and starts shipment. All the orders that are in the shipment will be present in the uncompleted orders. A trucker can click "arrive" button when the shipment has been completed, after which time this order is shown in the completed order area.
 
 In the Customer Interface, the information of order that this customer creates can be updated synchronously.
 ![image](Images/buyer1.png)
