@@ -13,10 +13,10 @@ COMING WEEKS, WE'LL WRITE A TUTORIAL ON HOW BEST TO DO THIS.
 <!-- Define your frontend here. -->
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"  ng-app="demoAppModule" ng-controller="DemoAppCtrl as demoApp">
 <head>
     <meta charset="UTF-8">
-    <title>Example CorDapp</title>
+    <title>{{demoApp.thisNode}}</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
@@ -34,7 +34,7 @@ COMING WEEKS, WE'LL WRITE A TUTORIAL ON HOW BEST TO DO THIS.
     <script src="js/driverOrderModal.js"></script>
 </head>
 
-<body ng-app="demoAppModule" ng-controller="DemoAppCtrl as demoApp">
+<body>
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -371,7 +371,7 @@ seller
                             </td>
                             <td class="vert-align">{{order.itinerary.expectedTime}}</td>
                             <td class="vert-align">{{order.itinerary.actualTime}}</td>
-                            <td class="vert-align"><button ng-click="sellerOrderModal.create([$index])" type="button" class="btn btn-primary">Confrim</button></td>
+                            <td class="vert-align"><button ng-click="sellerOrderModal.create([$index])" type="button" class="btn btn-primary">Confirm</button></td>
 
                         </tr>
                         <div ng-show="sellerOrderModal.formError" class="form-group">

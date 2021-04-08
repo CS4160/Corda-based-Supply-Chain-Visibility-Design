@@ -58,16 +58,16 @@ angular.module('demoAppModule').controller('driverOrderModalCtrl', function ($ht
         }
     };
 
-    driverOrderModal.displayMessage = (message) => {
-        const driverOrderMsgModal = $uibModal.open({
-            templateUrl: 'driverOrderMsgModal.html',
-            controller: 'driverOrderMsgModalCtrl',
-            controllerAs: 'driverOrderMsgModal',
-            resolve: { message: () => message }
-        });
-
-        driverOrderMsgModal.result.then(() => {}, () => {});
-    };
+    // driverOrderModal.displayMessage = (message) => {
+    //     const driverOrderMsgModal = $uibModal.open({
+    //         templateUrl: 'driverOrderMsgModal.html',
+    //         controller: 'driverOrderMsgModalCtrl',
+    //         controllerAs: 'driverOrderMsgModal',
+    //         resolve: { message: () => message }
+    //     });
+    //
+    //     driverOrderMsgModal.result.then(() => {}, () => {});
+    // };
 
     driverOrderModal.cancel = () => $uibModalInstance.dismiss();
 
