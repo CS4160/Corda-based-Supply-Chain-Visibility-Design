@@ -1,4 +1,3 @@
-# CS4160
 # A Corda-based Supply Chain Visibility Design
 
 This CorDapp shows how our supply chain visibility blockchain network could complete the transport process.
@@ -36,10 +35,10 @@ sh run-node.sh
 The predefined nodes are configured in <path-to-CS4160>/CS4160/supplychain-cordapp/
 build.gradle 
 ```bash
-cd <path-to-CS4160>/CS4160/supplychain-cordapp/
+cd Corda-based Supply Chain Visibility Design/supplychain-cordapp/
 ./gradlew deployNodes
-cd <path-to-CS4160>/CS4160/supplychain-cordapp/network_map_service/
-cp -r <path-to-CS4160>/CS4160/supplychain-cordapp/build/nodes/${PartyName} .
+cd network_map_service/
+cp -r Corda-based Supply Chain Visibility Design/supplychain-cordapp/build/nodes/${PartyName} .
 ```
 Before we run the script for cloning, we need to carefully edit several variables in run_clone_node.sh. 
 Here is an example. Please note that the port should not be reused. In other words, you need to use a different port for different nodes.
@@ -54,7 +53,7 @@ RPC_ADMIN_ADDR_PORT="10060"
 After the configuration, we can clone and register the new node to the network map server now.
 ```bash
 sh run_clone_node.sh
-``` 
+```
 
 #### STEP 5: RUN the NEW Registered Node
 ```bash
@@ -66,16 +65,17 @@ java -jar corda.jar
 Repeat the step 5 if you need to create another new node.
 
 #### STEP 7:
-After having completed adding new nodes, we should add several task runNodeNameServer commands manually in the build.gradle file in the clients folder. At this step, we will remember the RPC connection address of each new added nodes. An example of commands is shown as follows:
-```
+After having completed adding new nodes, we should add several task `runNodeNameServer` commands manually in the `build.gradle` file in the clients folder. At this step, we will remember the RPC connection address of each new added nodes. An example of commands is shown as follows:
+```kotlin
 task runAppleServer(type: JavaExec, dependsOn: jar) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'net.corda.samples.supplychain.server.ServerKt'
     args '--server.port=10069', '--config.rpc.host=localhost', '--config.rpc.port=10017', '--config.rpc.username=user1', '--config.rpc.password=test'
 }
 ```
-If we want to establish the server for each new nodes, we can simply change the '--config.rpc.port' to the corresponding RPC connection address, and the '--server.port' that is set to be as the front-end port which should be differentiated with each other.
+If we want to establish the server for each new nodes, we can simply change the`--config.rpc.port` to the corresponding RPC connection address, and the `--server.port` that is set to be as the front-end port which should be differentiated with each other.
 Note: the `--config.rpc.username=user1` and `--config.rpc.password=test` should be as same as the username and password set in build.gradle file in root folder. And `--config.rpc.port` should be the one you set in the step4.
+
 ### Running the CorDapp
 
 you can run our CorDapp and interact with it via a web server.
@@ -95,16 +95,16 @@ For instance, we assume there is one buyer node named Alice, one seller node nam
 We should start 3 webservers separately. Open a new tab of the terminal(make sure you are still in the project directory)
 and run:
 
-```
+```bash
 ./gradlew runAliceServer
 ```
 and 
 
-```
+```bash
 ./gradlew runAppleServer
 ```
 and
-```
+```bash
 ./gradlew runTomServer
 ```
 
@@ -126,7 +126,7 @@ For Node Tom:`localhost:10070`, you could see the Trucker interface in the webse
 ![image](https://github.com/CS4160/CS4160/blob/front-end-zhuoran/images/seller2.png)
 ![image](https://github.com/CS4160/CS4160/blob/front-end-zhuoran/images/trucker1.png)
 
-As the above images show, the Trucker Interface consists of two main parts: Uncompleted Orders and Complete Orders. Initially, As we can see in the Trucker interface, the trucker can click "accept order" button to check all orders assigned to this trucker.  Subsequently, thetrucker inputs the expected time to a specific order and starts shipment. All the orders that are in the shipment will bepresent in the uncompleted orders. A trucker can click "arrive" button when the shipment has been completed, afterwhich time this order is shown in the completed order area.As the requirement of this project, all the buyer’s information is invisible in the trucker interface.
+As the above images show, the Trucker Interface consists of two main parts: Uncompleted Orders and Complete Orders. Initially, As we can see in the Trucker interface, the trucker can click "accept order" button to check all orders assigned to this trucker.  Subsequently, the trucker inputs the expected time to a specific order and starts shipment. All the orders that are in the shipment will be present in the uncompleted orders. A trucker can click "arrive" button when the shipment has been completed, after which time this order is shown in the completed order area. As the requirement of this project, all the buyer’s information is invisible in the trucker interface.
 
 In the Customer Interface, the information of order that this customer creates can be updated synchronously.
 ![image](https://github.com/CS4160/CS4160/blob/front-end-zhuoran/images/buyer1.png)
