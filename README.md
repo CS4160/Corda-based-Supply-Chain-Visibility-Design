@@ -66,7 +66,7 @@ java -jar corda.jar
 Repeat the step 5 if you need to create another new node.
 
 #### STEP 7:
-After having completed adding new nodes, we should add several TaskrunServer commands manually in the build.gradle file in the clients folder. At this step, we will remember the RPC connection address of each new added nodes. An example of commands is shown as follows:
+After having completed adding new nodes, we should add several task runNodeNameServer commands manually in the build.gradle file in the clients folder. At this step, we will remember the RPC connection address of each new added nodes. An example of commands is shown as follows:
 ```
 task runAppleServer(type: JavaExec, dependsOn: jar) {
     classpath = sourceSets.main.runtimeClasspath
@@ -75,6 +75,7 @@ task runAppleServer(type: JavaExec, dependsOn: jar) {
 }
 ```
 If we want to establish the server for each new nodes, we can simply change the '--config.rpc.port' to the corresponding RPC connection address, and the '--server.port' that is set to be as the front-end port which should be differentiated with each other.
+Note: the `--config.rpc.username=user1` and `--config.rpc.password=test` should be as same as the username and password set in build.gradle file in root folder. And `--config.rpc.port` should be the one you set in the step4.
 ### Running the CorDapp
 
 you can run our CorDapp and interact with it via a web server.
