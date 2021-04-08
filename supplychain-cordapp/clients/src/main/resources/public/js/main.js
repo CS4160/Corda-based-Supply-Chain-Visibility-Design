@@ -1,7 +1,7 @@
 "use strict";
 
 // Define your backend here.
-angular.module('demoAppModule', ['ui.bootstrap']).controller('DemoAppCtrl', function($http, $location, $uibModal,$scope,$interval) {
+angular.module('demoAppModule', ['ui.bootstrap']).controller('DemoAppCtrl', function($http, $location, $uibModal,$scope,$interval,$rootScope) {
     const demoApp = this;
     const apiBaseURL = "/api/iou/";
 
@@ -9,7 +9,6 @@ angular.module('demoAppModule', ['ui.bootstrap']).controller('DemoAppCtrl', func
     $http.get(apiBaseURL + "me").then((response) => demoApp.thisNode = response.data.me);
     $http.get(apiBaseURL + "peers").then((response) => demoApp.peers = response.data.peers);
     $http.get(apiBaseURL + "identity").then((response) => demoApp.identity = response.data.identity);
-
 
     $http.get(apiBaseURL + "orders" + "?state_type=orderState").then((response) =>demoApp.orderState = Object.keys(response.data).map((key) => response.data[key].state.data));
     $http.get(apiBaseURL + "orders" + "?state_type=transState").then((response) =>demoApp.transState = Object.keys(response.data).map((key) => response.data[key].state.data));
