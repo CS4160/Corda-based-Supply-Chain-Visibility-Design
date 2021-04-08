@@ -1,7 +1,12 @@
 # A Corda-based Supply Chain Visibility Design
 
 This CorDapp shows how our supply chain visibility blockchain network could complete the transport process.
-The Customer, Supplier, and Trucker Interfaces are also available in our CorDapp.
+The Customer, Supplier, and Trucker Interfaces are also available in our CorDapp. 
+We follow the guideline of [CorDapp Design Language (CDL)](https://docs.corda.net/docs/cdl/cdl/cdl-overview.html) to implement our project. 
+To understand the implementation, please refer to the following Lucid Chart: 
+[Smart Contract View](https://lucid.app/lucidchart/invitations/accept/inv_75dc8f10-9a36-4762-ba91-107cf0e62fe9), 
+[Ledger Evolution View](https://lucid.app/lucidchart/invitations/accept/inv_48f547bc-27c0-41c2-b5f3-c0a79674b650) and 
+[Business Process Modeling Notation View](https://lucid.app/lucidchart/invitations/accept/inv_4d6a74c1-9afd-4bcc-986d-31e696bc2dd7).
 
 ## Usage
 Please follow the instruction on [Get started with Corda](https://ubuntu.com/tutorials/get-started-with-Corda#1-overview) for installation on Ubuntu.
