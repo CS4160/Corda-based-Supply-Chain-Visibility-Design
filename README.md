@@ -4,6 +4,7 @@ This CorDapp shows how our supply chain visibility blockchain network could comp
 The Customer, Supplier, and Trucker Interfaces are also available in our CorDapp.
 
 ## Usage
+We recommend you to use IntelliJ IDEA to open this project, since it can auto-import gradle project.
 
 ### Network Map Service
 
@@ -35,7 +36,7 @@ sh run-node.sh
 The predefined nodes are configured in <path-to-CS4160>/CS4160/supplychain-cordapp/
 build.gradle 
 ```bash
-cd Corda-based Supply Chain Visibility Design/supplychain-cordapp/
+cd Corda-based-Supply-Chain-Visibility-Design/supplychain-cordapp/
 ./gradlew deployNodes
 cd network_map_service/
 cp -r Corda-based Supply Chain Visibility Design/supplychain-cordapp/build/nodes/${PartyName} .
@@ -78,7 +79,7 @@ Note: the `--config.rpc.username=user1` and `--config.rpc.password=test` should 
 
 ### Running the CorDapp
 
-you can run our CorDapp and interact with it via a web server.
+You can run our CorDapp and interact with it via a web server. (Our default `build.gradle` file has defined 10 nodes, it may cost you lots of memory, you can reduce the number of nodes by modifying the `build.gradle` file. )
 
 Open a terminal and go to the project root directory and type:
 ```
