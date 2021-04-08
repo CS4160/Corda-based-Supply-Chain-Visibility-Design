@@ -128,20 +128,20 @@ Once all three servers have started up (look for `Webserver started up in XXX se
 * From a Node Driver configuration, look for `Starting webserver on address localhost:100XX` for the addresses.
 
 For instance, as for Node Alice:`localhost:10066`, you could see the buyer interface in the webserver as follows:
-![image](images/buyer.png)
+![image](Images/buyer.png)
 
 The customer could create an order by clicking the button "create order" at the top of the page. Thencustomer could input order information to create a new order. Significantly, Only the supplier’s information is visiblewhen a customer chooses a supplier.
 
 For Node Apple:`localhost:11000`, you could see the seller interface in the webserver as follows:
-![image](images/seller1.png)
+![image](Images/seller1.png)
 
 The Supplier could assign a trucker to a specific order after clicking the " check order" button.Similarly, Only trucker information is visible when the Supplier assigns a trucker to an order.After assigning the trucker function, all the order information will be displayed on the supplier page for tracking theorder information.
 
 For Node Tom:`localhost:10070`, you could see the Trucker interface in the webserver as follows:
-![image](images/seller2.png)
-![image](images/trucker1.png)
+![image](Images/seller2.png)
+![image](Images/trucker1.png)
 
 As the above images show, the Trucker Interface consists of two main parts: Uncompleted Orders and Complete Orders. Initially, As we can see in the Trucker interface, the trucker can click "accept order" button to check all orders assigned to this trucker.  Subsequently, the trucker inputs the expected time to a specific order and starts shipment. All the orders that are in the shipment will be present in the uncompleted orders. A trucker can click "arrive" button when the shipment has been completed, after which time this order is shown in the completed order area. As the requirement of this project, all the buyer’s information is invisible in the trucker interface.
 
 In the Customer Interface, the information of order that this customer creates can be updated synchronously.
-![image](images/buyer1.png)
+![image](Images/buyer1.png)
