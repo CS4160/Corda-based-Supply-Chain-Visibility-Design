@@ -120,6 +120,7 @@ For Node Apple:`localhost:11000`, you could see the seller interface in the webs
 ![image](https://github.com/CS4160/CS4160/blob/front-end-zhuoran/images/seller1.png)
 
 The Supplier could assign a trucker to a specific order after clicking the " check order" button.Similarly, Only trucker information is visible when the Supplier assigns a trucker to an order.After assigning the trucker function, all the order information will be displayed on the supplier page for tracking theorder information.
+
 For Node Tom:`localhost:10070`, you could see the Trucker interface in the webserver as follows:
 ![image](https://github.com/CS4160/CS4160/blob/front-end-zhuoran/images/seller2.png)
 ![image](https://github.com/CS4160/CS4160/blob/front-end-zhuoran/images/trucker1.png)
