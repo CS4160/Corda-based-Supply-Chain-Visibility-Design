@@ -4,7 +4,9 @@ This CorDapp shows how our supply chain visibility blockchain network could comp
 The Customer, Supplier, and Trucker Interfaces are also available in our CorDapp.
 
 ## Usage
-Please follow the instruction on [Corda website](https://docs.corda.net/docs/corda-os/4.7/getting-set-up.html) for installation. 
+Please follow the instruction on [Get started with Corda](https://ubuntu.com/tutorials/get-started-with-Corda#1-overview) for installation on Ubuntu.
+
+Note: you may also check the software requirements for Corda on [Corda website](https://docs.corda.net/docs/corda-os/4.7/getting-set-up.html).
 
 
 ### Environment
